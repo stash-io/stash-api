@@ -8,12 +8,12 @@ import kotlinx.coroutines.Dispatchers
 import org.jetbrains.exposed.sql.*
 
 @Serializable
-data class ExposedUser(val name: String, val age: Int)
+data class ExposedUser(val email: String, val password: String)
 class UserService(private val database: Database) {
     object Users : Table() {
         val id = integer("id").autoIncrement()
-        val name = varchar("name", length = 50)
-        val age = integer("age")
+        val email = varchar("email", length = 50)
+        val password = text("password")
 
         override val primaryKey = PrimaryKey(id)
     }
@@ -29,15 +29,23 @@ class UserService(private val database: Database) {
 
     suspend fun create(user: ExposedUser): Int = dbQuery {
         Users.insert {
-            it[name] = user.name
-            it[age] = user.age
+            it[email] = user.email
+            it[password] = user.password
         }[Users.id]
     }
 
     suspend fun read(id: Int): ExposedUser? {
         return dbQuery {
             Users.select { Users.id eq id }
-                .map { ExposedUser(it[Users.name], it[Users.age]) }
+                .map { ExposedUser(it[Users.email], it[Users.password]) }
+                .singleOrNull()
+        }
+    }
+
+    suspend fun readByEmail(email: String): ExposedUser? {
+        return dbQuery {
+            Users.select { Users.email eq email }
+                .map { ExposedUser(it[Users.email], it[Users.password]) }
                 .singleOrNull()
         }
     }
@@ -45,8 +53,8 @@ class UserService(private val database: Database) {
     suspend fun update(id: Int, user: ExposedUser) {
         dbQuery {
             Users.update({ Users.id eq id }) {
-                it[name] = user.name
-                it[age] = user.age
+                it[email] = user.email
+                it[password] = user.password
             }
         }
     }
