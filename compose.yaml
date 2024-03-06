@@ -1,0 +1,15 @@
+version: '3.8'
+services:
+  db:
+    image: postgres
+    restart: always
+    volumes:
+      - db:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: stash
+      POSTGRES_USER: stash
+      POSTGRES_PASSWORD: secret
+    ports:
+      - "5432:5432"
+volumes:
+  db:

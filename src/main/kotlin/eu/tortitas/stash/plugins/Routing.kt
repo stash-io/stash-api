@@ -23,11 +23,17 @@ fun Application.configureRouting() {
     val database = getPostgresDatabase()
     val userService = UserService(database)
 
-    install(StatusPages) {
-        exception<Throwable> { call, cause ->
-            call.respondText(text = "500: $cause", status = HttpStatusCode.InternalServerError)
-        }
-    }
+    // install(StatusPages) {
+    //     exception<Throwable> { call, cause ->
+    //         call.respondText(text = "500: $cause", status = HttpStatusCode.InternalServerError)
+    //     }
+    // }
+    //
+    // [!] Throws:
+    // io.ktor.server.application.DuplicatePluginException: Please make sure that you use unique
+    // name for the plugin and don't install it twice. Conflicting application plugin is already
+    // installed with the same key as `StatusPages`
+
     routing {
         get("/") { call.respondText("Hello World!") }
         static("/static") { resources("static") }

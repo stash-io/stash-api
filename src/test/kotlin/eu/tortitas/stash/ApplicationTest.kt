@@ -10,12 +10,21 @@ import kotlin.test.*
 class ApplicationTest {
     @Test
     fun testRoot() = testApplication {
-        application {
-            configureRouting()
-        }
+        application { configureRouting() }
         client.get("/").apply {
             assertEquals(HttpStatusCode.OK, status)
             assertEquals("Hello World!", bodyAsText())
         }
+    }
+
+    @Test
+    fun testLogin() = testApplication {
+        application { configureRouting() }
+        client
+                .post("/login") {
+                    contentType(ContentType.Application.Json)
+                    setBody("{\"email\":\"notindatabase@test.com\",\"password\":\"test\"}")
+                }
+                .apply { assertEquals(HttpStatusCode.Unauthorized, status) }
     }
 }
