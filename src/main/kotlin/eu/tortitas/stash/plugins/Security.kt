@@ -28,3 +28,24 @@ fun Application.configureSecurity() {
         }
     }
 }
+
+
+class JwtService (
+    val secret: String,
+    val issuer: String,
+    val audience: String
+) {
+    fun makeToken(email: String): String {
+        return JWT.create()
+            .withAudience(audience)
+            .withIssuer(issuer)
+            .withClaim("email", email)
+            .sign(Algorithm.HMAC256(secret))
+    }
+}
+
+fun Application.provideJwtService() = JwtService(
+    environment.config.property("jwt.secret").getString(),
+    environment.config.property("jwt.domain").getString(),
+    environment.config.property("jwt.audience").getString()
+)

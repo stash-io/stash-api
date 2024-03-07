@@ -1,5 +1,6 @@
 package eu.tortitas.stash.plugins
 
+import io.ktor.server.application.*
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
@@ -64,4 +65,9 @@ class UserService(private val database: Database) {
             Users.deleteWhere { Users.id.eq(id) }
         }
     }
+}
+
+fun Application.provideUserService(): UserService {
+    val database = getPostgresDatabase()
+    return UserService(database)
 }

@@ -5,23 +5,22 @@ import com.auth0.jwt.algorithms.Algorithm
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.http.content.*
-import io.ktor.server.plugins.statuspages.*
 import io.ktor.server.request.receive
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import java.util.*
 import kotlinx.serialization.Serializable
+import java.io.File
+import java.util.*
 
-@Serializable data class LoginRequest(val email: String, val password: String)
+@Serializable
+data class LoginRequest(val email: String, val password: String)
+
+@Serializable
+data class RegisterRequest(val email: String, val password: String)
 
 fun Application.configureRouting() {
-    val secret = environment.config.property("jwt.secret").getString()
-    val issuer = environment.config.property("jwt.domain").getString()
-    val audience = environment.config.property("jwt.audience").getString()
-    val myRealm = environment.config.property("jwt.realm").getString()
-
-    val database = getPostgresDatabase()
-    val userService = UserService(database)
+    val jwtService = provideJwtService()
+    val userService = provideUserService()
 
     // install(StatusPages) {
     //     exception<Throwable> { call, cause ->
@@ -36,7 +35,22 @@ fun Application.configureRouting() {
 
     routing {
         get("/") { call.respondText("Hello World!") }
-        static("/static") { resources("static") }
+
+        staticFiles("/static", File("static"))
+
+        post("/register") {
+            val request = call.receive<RegisterRequest>()
+
+            val user = userService.readByEmail(request.email)
+
+            if (user != null) {
+                call.respond(HttpStatusCode.Conflict, "User already exists")
+                return@post
+            }
+
+            val id = userService.create(ExposedUser(request.email, request.password))
+            call.respond(HttpStatusCode.Created, id)
+        }
 
         post("/login") {
             val request = call.receive<LoginRequest>()
@@ -48,13 +62,7 @@ fun Application.configureRouting() {
                 return@post
             }
 
-            val token =
-                    JWT.create()
-                            .withAudience(audience)
-                            .withIssuer(issuer)
-                            .withClaim("email", user?.email ?: "a")
-                            .withExpiresAt(Date(System.currentTimeMillis() + 60000))
-                            .sign(Algorithm.HMAC256(secret))
+            val token = jwtService.makeToken(user.email)
             call.respond(hashMapOf("token" to token))
         }
     }
