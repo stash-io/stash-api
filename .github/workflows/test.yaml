@@ -44,4 +44,4 @@ jobs:
         with:
           name: reports
           path: |
-            build/reports/tests/test/index.html
+            build/reports/tests/test
