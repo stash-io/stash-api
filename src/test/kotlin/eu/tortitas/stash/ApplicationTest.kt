@@ -20,18 +20,6 @@ import org.slf4j.MDC.put
 import kotlin.test.*
 
 class ApplicationTest {
-    /*@BeforeTest
-    fun setup() {
-        withTestApplication(Application::module) {
-            // fake environment
-            application.environment.config.apply {
-                put("postgres.url", "jdbc:")
-                put("postgres.user", "stash")
-                put("postgres.password", "stash")
-            }
-        }
-    }*/
-
     @Test
     fun testRoot() = testApplication {
         client.get("/").apply {
@@ -50,7 +38,7 @@ class ApplicationTest {
         }
 
         client
-                .post("/register") {
+                .post("/auth/register") {
                     contentType(ContentType.Application.Json)
                     setBody("{\"email\":\"test@test.test\",\"password\":\"test\"}")
                 }
@@ -66,21 +54,20 @@ class ApplicationTest {
         }
 
         client
-            .post("/register") {
+            .post("/auth/register") {
                 contentType(ContentType.Application.Json)
                 setBody("{\"email\":\"test@test.test\",\"password\":\"test\"}")
             }
             .apply { assertEquals(HttpStatusCode.Created, status) }
 
         client
-            .post("/register") {
+            .post("/auth/register") {
                 contentType(ContentType.Application.Json)
                 setBody("{\"email\":\"test@test.test\",\"password\":\"test\"}")
             }
             .apply { assertEquals(HttpStatusCode.Conflict, status) }
     }
 
-    @OptIn(DelicateCoroutinesApi::class)
     @Test
     fun testLogin() = testApplication {
         application {
@@ -96,7 +83,7 @@ class ApplicationTest {
         }
 
         client
-                .post("/login") {
+                .post("/auth/login") {
                     contentType(ContentType.Application.Json)
                     setBody("{\"email\":\"indatabase@test.com\",\"password\":\"test\"}")
                 }

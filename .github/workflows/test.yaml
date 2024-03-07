@@ -12,12 +12,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # - uses: isbang/compose-action@v1.5.1
-      #   with:
-      #     compose-file: "./compose.yaml"
-      #     down-flags: "--volumes"
-      #     services: |
-      #       db
+      - uses: isbang/compose-action@v1.5.1
+        with:
+          compose-file: "./compose.yaml"
+          down-flags: "--volumes"
+          services: |
+            db
 
       - uses: actions/setup-java@v3
         with:
