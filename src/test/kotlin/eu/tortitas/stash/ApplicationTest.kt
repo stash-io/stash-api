@@ -21,10 +21,10 @@ import kotlin.test.*
 
 class ApplicationTest {
     @Test
-    fun testRoot() = testApplication {
-        client.get("/").apply {
+    fun testPing() = testApplication {
+        client.get("/api/ping").apply {
             assertEquals(HttpStatusCode.OK, status)
-            assertEquals("Hello World!", bodyAsText())
+            assertEquals("pong", bodyAsText())
         }
     }
 
@@ -38,7 +38,7 @@ class ApplicationTest {
         }
 
         client
-                .post("/auth/register") {
+                .post("/api/auth/register") {
                     contentType(ContentType.Application.Json)
                     setBody("{\"email\":\"test@test.test\",\"password\":\"test\"}")
                 }
@@ -54,14 +54,14 @@ class ApplicationTest {
         }
 
         client
-            .post("/auth/register") {
+            .post("/api/auth/register") {
                 contentType(ContentType.Application.Json)
                 setBody("{\"email\":\"test@test.test\",\"password\":\"test\"}")
             }
             .apply { assertEquals(HttpStatusCode.Created, status) }
 
         client
-            .post("/auth/register") {
+            .post("/api/auth/register") {
                 contentType(ContentType.Application.Json)
                 setBody("{\"email\":\"test@test.test\",\"password\":\"test\"}")
             }
@@ -83,7 +83,7 @@ class ApplicationTest {
         }
 
         client
-                .post("/auth/login") {
+                .post("/api/auth/login") {
                     contentType(ContentType.Application.Json)
                     setBody("{\"email\":\"indatabase@test.com\",\"password\":\"test\"}")
                 }
