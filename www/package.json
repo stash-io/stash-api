@@ -1,6 +1,7 @@
 {
   "scripts": {
-    "build": "watch 'npm run build:html & npm run build:css' ./src/",
+    "build:watch": "watch 'npm run build' ./src/",
+    "build": "npm run build:html & npm run build:css",
     "build:html": "cp ./src/*.html ./dist/",
     "build:css": "tailwindcss build ./src/styles.css -o ./dist/styles.css"
   },
