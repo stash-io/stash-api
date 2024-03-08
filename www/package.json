@@ -1,0 +1,13 @@
+{
+  "scripts": {
+    "build": "watch 'npm run build:html & npm run build:css' ./src/",
+    "build:html": "cp ./src/*.html ./dist/",
+    "build:css": "tailwindcss build ./src/styles.css -o ./dist/styles.css"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.4.1"
+  },
+  "dependencies": {
+    "watch": "^1.0.2"
+  }
+}

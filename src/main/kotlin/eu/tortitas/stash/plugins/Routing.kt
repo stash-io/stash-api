@@ -26,8 +26,6 @@ fun Application.configureRouting() {
     // installed with the same key as `StatusPages`
 
     routing {
-        staticFiles("/", File("www"))
-
         route("/api") {
             get("/ping") { call.respondText("pong") }
             authRoute(this@configureRouting)
