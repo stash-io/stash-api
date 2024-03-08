@@ -12,28 +12,23 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # - uses: isbang/compose-action@v1.5.1
-      #   with:
-      #     compose-file: "./compose.yaml"
-      #     down-flags: "--volumes"
-      #     services: |
-      #       db
+      # Maybe declare the database as a job service in this workflow. Upsides are that it would no longer need the third
+      # party action, downsides are that it would need to be mantained alongside the compose file.
+      - uses: isbang/compose-action@v1.5.1
+        with:
+          compose-file: "./compose.yaml"
+          down-flags: "--volumes"
+          services: |
+            db
 
       - uses: actions/setup-java@v3
         with:
           java-version: '17'
           distribution: 'temurin'
+          cache: gradle
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
-
-      - name: Cache
-        uses: actions/cache@v2
-        with:
-          path: ~/.gradle/caches
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-
 
       - name: Run tests
         run: ./gradlew test

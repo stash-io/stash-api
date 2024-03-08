@@ -8,3 +8,9 @@ jwt:
   domain: "https://jwt-provider-domain/"
   audience: "jwt-audience"
   realm: "ktor sample app"
+  secret: "secret"
+
+postgres:
+  url: "jdbc:postgresql://localhost:5432/stash"
+  user: "stash"
+  password: "secret"
