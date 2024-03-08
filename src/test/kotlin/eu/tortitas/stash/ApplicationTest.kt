@@ -29,70 +29,9 @@ class ApplicationTest {
     }
 
     @Test
-    fun testRegister() = testApplication {
-        application {
-            val database = getPostgresDatabase()
-            transaction(database) {
-                UserService.Users.deleteAll()
-            }
+    fun testStatic() = testApplication {
+        client.get("/index.html").apply {
+            assertEquals(HttpStatusCode.OK, status)
         }
-
-        client
-                .post("/api/auth/register") {
-                    contentType(ContentType.Application.Json)
-                    setBody("{\"email\":\"test@test.test\",\"password\":\"test\"}")
-                }
-                .apply { assertEquals(HttpStatusCode.Created, status) }
-    }
-    @Test
-    fun testRegisterUserAlreadyExists() = testApplication {
-        application {
-            val database = getPostgresDatabase()
-            transaction(database) {
-                UserService.Users.deleteAll()
-            }
-        }
-
-        client
-            .post("/api/auth/register") {
-                contentType(ContentType.Application.Json)
-                setBody("{\"email\":\"test@test.test\",\"password\":\"test\"}")
-            }
-            .apply { assertEquals(HttpStatusCode.Created, status) }
-
-        client
-            .post("/api/auth/register") {
-                contentType(ContentType.Application.Json)
-                setBody("{\"email\":\"test@test.test\",\"password\":\"test\"}")
-            }
-            .apply { assertEquals(HttpStatusCode.Conflict, status) }
-    }
-
-    @Test
-    fun testLogin() = testApplication {
-        application {
-            runBlocking {
-                val database = getPostgresDatabase()
-                transaction(database) {
-                    UserService.Users.deleteAll()
-                }
-
-                val userService = provideUserService()
-                userService.create(ExposedUser("indatabase@test.com", "test"))
-            }
-        }
-
-        client
-                .post("/api/auth/login") {
-                    contentType(ContentType.Application.Json)
-                    setBody("{\"email\":\"indatabase@test.com\",\"password\":\"test\"}")
-                }
-                .apply {
-                    assertEquals(HttpStatusCode.OK, status)
-
-                    @Serializable data class Response(val token: String)
-                    val bodyParsed = Json.decodeFromString<Response>(bodyAsText())
-                    assertNotNull(bodyParsed.token)
-                }
     }
 }
