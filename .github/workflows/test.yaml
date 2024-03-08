@@ -12,6 +12,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # Maybe declare the database as a job service in this workflow. Upsides are that it would no longer need the third
+      # party action, downsides are that it would need to be mantained alongside the compose file.
       - uses: isbang/compose-action@v1.5.1
         with:
           compose-file: "./compose.yaml"
