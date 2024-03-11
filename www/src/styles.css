@@ -2,15 +2,31 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap')
+@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
 
+body {
+  @apply text-primary text-[20px];
+}
 
 button {
-    background-color: var(--color-primary);
-    color: var(--color-primary-fg);
-
-    border: 1px solid var(--color-primary);
-    border-radius: 25px;
-
-    padding: 10px 25px;
+  @apply transition-colors
+  bg-primary text-secondary
+  hover:bg-transparent hover:text-primary
+  border-primary border-2 rounded-full
+  px-5 py-2;
 }
+
+button.button--secondary {
+  @apply transition-colors
+  bg-transparent text-primary
+  hover:bg-primary hover:text-secondary;
+}
+
+.logo {
+  @apply text-3xl;
+}
+
+.heading {
+  @apply text-5xl font-semibold;
+}
+
