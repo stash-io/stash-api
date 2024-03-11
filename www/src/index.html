@@ -1,11 +1,48 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>St<a/>sh</title>
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-    <h1 class="text-xl">Welcome to Stash</h1>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="styles.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="icon"
+      type="image/jpeg"
+      href="assets/favicon.jpeg"
+      sizes="48x48"
+    />
+
+    <title>St&lt;a/&gt;sh</title>
+    <meta
+      name="description"
+      content="Stash is a high quality, high availability link storage service."
+    />
+  </head>
+  <body>
+    <header
+      class="p-4 flex justify-between items-center fixed top-0 left-0 right-0"
+    >
+      <h1 class="logo">st&lt;a/&gt;sh</h1>
+
+      <div>
+        <button>Login</button>
+        <button class="button--secondary hidden sm:inline-block">
+          Create an account
+        </button>
+      </div>
+    </header>
+
+    <section class="flex gap-4 items-center justify-center min-h-dvh">
+      <article class="p-4 flex flex-col items-start gap-3">
+        <h1 class="heading">Your links, safe</h1>
+        <p>
+          Never lose a link again with our high availability, high quality
+          service.
+        </p>
+        <button>Discover more</button>
+      </article>
+
+      <img src="assets/Logo.webp" alt="Stash logo" class="hidden md:block" />
+    </section>
+  </body>
 </html>
+
