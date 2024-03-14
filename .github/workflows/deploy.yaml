@@ -40,5 +40,5 @@ jobs:
           REMOTE_USER: ${{ secrets.DEPLOY_REMOTE_USER }}
           TARGET: ${{ secrets.DEPLOY_REMOTE_TARGET }}
           SCRIPT_AFTER: |
-            docker-compose up -d
+            docker-compose -f ${{ secrets.DEPLOY_REMOTE_TARGET }}/publish -d up
             systemctl restart stash
