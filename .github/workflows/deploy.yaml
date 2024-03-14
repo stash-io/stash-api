@@ -47,4 +47,4 @@ jobs:
           TARGET: ${{ secrets.DEPLOY_REMOTE_TARGET }}
           SCRIPT_AFTER: |
             docker-compose -f stash/publish/compose.yaml -p stash up -d
-            systemctl restart stash
+            systemctl restart --user stash.service
