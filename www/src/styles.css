@@ -4,8 +4,12 @@
 
 @import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
 
+html {
+  font-size: clamp(16px, 2.5vw, 20px);
+}
+
 body {
-  @apply text-primary text-[20px];
+  @apply text-primary;
 }
 
 button {
@@ -30,3 +34,39 @@ button.button--secondary {
   @apply text-5xl font-semibold;
 }
 
+.radial-gradient {
+  @apply -z-10 absolute top-0 left-0 w-dvw h-dvh pointer-events-none;
+
+  background: radial-gradient(
+    circle at 105% -5%,
+    rgba(201, 222, 247, 1) 0%,
+    rgba(201, 222, 247, 0) 50%
+  );
+}
+
+.header {
+  @apply fixed top-0 left-0 right-0 z-10;
+  @apply flex justify-between items-center;
+  @apply p-4;
+  @apply transition-shadow;
+}
+.header--scrolled {
+  @apply backdrop-blur-sm shadow-sm;
+}
+
+html {
+  @apply snap-y snap-proximity;
+}
+body > section {
+  @apply snap-start;
+}
+body > section:not(:first-of-type) > article {
+  @apply pt-28 md:pt-4;
+}
+
+.card {
+  @apply bg-white shadow-md p-4;
+  @apply border border-muted rounded-xl;
+  @apply w-[300px] min-h-[150px];
+  @apply flex flex-col gap-3;
+}

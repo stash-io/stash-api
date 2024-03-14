@@ -16,22 +16,36 @@
       name="description"
       content="Stash is a high quality, high availability link storage service."
     />
+
+    <script defer>
+      document.addEventListener("scroll", () => {
+        const header = document.querySelector(".header");
+        const isFocusedOnSection = window.scrollY % window.innerHeight === 0;
+
+        if (isFocusedOnSection) {
+          header.classList.remove("header--scrolled");
+          return;
+        }
+
+        header.classList.add("header--scrolled");
+      });
+    </script>
   </head>
   <body>
-    <header
-      class="p-4 flex justify-between items-center fixed top-0 left-0 right-0"
-    >
+    <header class="header">
       <h1 class="logo">st&lt;a/&gt;sh</h1>
 
-      <div>
-        <button>Login</button>
+      <div class="flex gap-3">
         <button class="button--secondary hidden sm:inline-block">
           Create an account
         </button>
+        <button>Login</button>
       </div>
     </header>
 
-    <section class="flex gap-4 items-center justify-center min-h-dvh">
+    <section
+      class="flex gap-4 items-center justify-between max-w-[1200px] mx-auto min-h-dvh"
+    >
       <article class="p-4 flex flex-col items-start gap-3">
         <h1 class="heading">Your links, safe</h1>
         <p>
@@ -42,7 +56,79 @@
       </article>
 
       <img src="assets/Logo.webp" alt="Stash logo" class="hidden md:block" />
+
+      <div class="radial-gradient"></div>
+    </section>
+
+    <section
+      class="flex gap-4 items-center justify-between max-w-[1200px] mx-auto min-h-dvh relative overflow-x-hidden"
+    >
+      <article class="p-4 flex flex-col items-start gap-3">
+        <h1 class="heading">Why chose us</h1>
+        <p class="max-w-[750px]">
+          We strive to provide the best user experience while using the latest
+          technologies in our stack.
+        </p>
+
+        <div class="flex gap-4 flex-wrap">
+          <div class="card">
+            <img
+              src="assets/icons/gears.svg"
+              alt="Gears icon"
+              width="32"
+              height="32"
+            />
+
+            <div>
+              <h2 class="font-semibold text-sm">Ease of use</h2>
+              <p class="opacity-75 text-sm">
+                We try to provide the best user experience possible.
+              </p>
+            </div>
+          </div>
+
+          <div class="card">
+            <img
+              src="assets/icons/bolt.svg"
+              alt="Gears icon"
+              width="32"
+              height="32"
+            />
+
+            <div>
+              <h2 class="font-semibold text-sm">Blazingly fast</h2>
+              <p class="opacity-75 text-sm">
+                By using the latest technologies available our load times are
+                fast.
+              </p>
+            </div>
+          </div>
+
+          <div class="card">
+            <img
+              src="assets/icons/layer-group.svg"
+              alt="Gears icon"
+              width="32"
+              height="32"
+            />
+
+            <div>
+              <h2 class="font-semibold text-sm">On all your platforms</h2>
+              <p class="opacity-75 text-sm">
+                We provide apps for every platform and OS.
+              </p>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <img
+        src="assets/Grid.webp"
+        alt="Grid"
+        class="absolute left-0 transform -translate-x-40 lg:-translate-x-0 max-w-none -z-10"
+        width="1100"
+        height="675"
+      />
     </section>
   </body>
 </html>
-
