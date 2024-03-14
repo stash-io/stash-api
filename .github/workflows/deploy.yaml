@@ -41,5 +41,5 @@ jobs:
           TARGET: ${{ secrets.DEPLOY_REMOTE_TARGET }}
           SCRIPT_AFTER: |
             echo $(pwd) > /home/tortitas/caca.txt
-            docker-compose -f ${{ secrets.DEPLOY_REMOTE_TARGET }}/publish/compose.yaml -p stash -d up
+            docker-compose -f ${{ secrets.DEPLOY_REMOTE_TARGET }}/publish/compose.yaml -p stash up -d
             systemctl restart stash
