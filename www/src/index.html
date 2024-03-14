@@ -16,22 +16,36 @@
       name="description"
       content="Stash is a high quality, high availability link storage service."
     />
+
+    <script defer>
+      document.addEventListener("scroll", () => {
+        const header = document.querySelector(".header");
+        const isFocusedOnSection = window.scrollY % window.innerHeight === 0;
+
+        if (isFocusedOnSection) {
+          header.classList.remove("header--scrolled");
+          return;
+        }
+
+        header.classList.add("header--scrolled");
+      });
+    </script>
   </head>
   <body>
-    <header
-      class="p-4 flex justify-between items-center fixed top-0 left-0 right-0"
-    >
+    <header class="header">
       <h1 class="logo">st&lt;a/&gt;sh</h1>
 
-      <div>
-        <button>Login</button>
+      <div class="flex gap-3">
         <button class="button--secondary hidden sm:inline-block">
           Create an account
         </button>
+        <button>Login</button>
       </div>
     </header>
 
-    <section class="flex gap-4 items-center justify-center min-h-dvh">
+    <section
+      class="flex gap-4 items-center justify-between max-w-[1200px] mx-auto min-h-dvh"
+    >
       <article class="p-4 flex flex-col items-start gap-3">
         <h1 class="heading">Your links, safe</h1>
         <p>
@@ -42,7 +56,28 @@
       </article>
 
       <img src="assets/Logo.webp" alt="Stash logo" class="hidden md:block" />
+
+      <div class="radial-gradient"></div>
+    </section>
+
+    <section
+      class="flex gap-4 items-center justify-between max-w-[1200px] mx-auto min-h-dvh relative overflow-x-hidden"
+    >
+      <article class="p-4 flex flex-col items-start gap-3">
+        <h1 class="heading">Why chose us</h1>
+        <p>
+          We strive to provide the best user experience while using the latest
+          technologies in our stack.
+        </p>
+      </article>
+
+      <img
+        src="assets/Grid.webp"
+        alt="Grid"
+        class="absolute left-0 transform -translate-x-40 lg:-translate-x-0 max-w-none -z-10"
+        width="1100"
+        height="675"
+      />
     </section>
   </body>
 </html>
-

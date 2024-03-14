@@ -27,6 +27,32 @@ button.button--secondary {
 }
 
 .heading {
-  @apply text-5xl font-semibold;
+  @apply text-5xl font-semibold z-10;
 }
 
+.radial-gradient {
+  @apply -z-10 absolute top-0 left-0 w-dvw h-dvh pointer-events-none;
+
+  background: radial-gradient(
+    circle at 105% -5%,
+    rgba(201, 222, 247, 1) 0%,
+    rgba(201, 222, 247, 0) 50%
+  );
+}
+
+.header {
+  @apply fixed top-0 left-0 right-0 z-10;
+  @apply flex justify-between items-center;
+  @apply p-4;
+  @apply transition-shadow;
+}
+.header--scrolled {
+  @apply backdrop-blur-sm shadow-sm;
+}
+
+html {
+  @apply snap-y snap-proximity;
+}
+body > section {
+  @apply snap-start;
+}
