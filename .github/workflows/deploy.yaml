@@ -23,11 +23,17 @@ jobs:
       - name: Build
         run: ./gradlew buildFatJar
 
+      - name: Build www
+        run: |
+          npm install --prefix www
+          npm run --prefix www build
+
       - name: Create publish folder
         run: |
-          mkdir publish
+          mkdir -p publish/www
           cp build/libs/eu.tortitas.stash.stash-api-all.jar publish
           cp compose.yaml publish
+          cp www/dist publish/www/dist
 
       # Public key is ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINB2yDOCpBdy0x3DHOaVHMCtpayJ72bFypGRw8rX3YO6 vgarciaf@hey.com
       - name: Deploy to Server
