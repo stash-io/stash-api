@@ -23,5 +23,22 @@ jobs:
       - name: Build
         run: ./gradlew buildFatJar
 
-      - name: Upload
-        run: stat ./build/libs/eu.tortitas.stash.stash-api-all.jar
+      - name: Create publish folder
+        run: |
+          mkdir publish
+          cp build/libs/eu.tortitas.stash.stash-api-all.jar publish
+          cp compose.yaml publish
+
+      # Public key is ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINB2yDOCpBdy0x3DHOaVHMCtpayJ72bFypGRw8rX3YO6 vgarciaf@hey.com
+      - name: Deploy to Server
+        uses: easingthemes/ssh-deploy@main
+        with:
+          SSH_PRIVATE_KEY: ${{ secrets.DEPLOY_PRIVATE_KEY }}
+          ARGS: "-rlgoDzvc -i --delete"
+          SOURCE: "publish"
+          REMOTE_HOST: ${{ secrets.DEPLOY_REMOTE_HOST }}
+          REMOTE_USER: ${{ secrets.DEPLOY_REMOTE_USER }}
+          TARGET: ${{ secrets.DEPLOY_REMOTE_TARGET }}
+          SCRIPT_AFTER: |
+            docker-compose up -d
+            systemctl restart stash
