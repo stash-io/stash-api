@@ -1,9 +1,9 @@
 ktor:
-    application:
-        modules:
-            - eu.tortitas.stash.ApplicationKt.module
-    deployment:
-        port: 8080
+  application:
+    modules:
+      - eu.tortitas.stash.ApplicationKt.module
+  deployment:
+    port: 5482
 jwt:
   domain: "https://jwt-provider-domain/"
   audience: "jwt-audience"
@@ -11,6 +11,6 @@ jwt:
   secret: "secret"
 
 postgres:
-  url: "jdbc:postgresql://localhost:5432/stash"
+  url: "jdbc:postgresql://localhost:5481/stash"
   user: "stash"
   password: "secret"
