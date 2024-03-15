@@ -55,7 +55,7 @@ button.button--secondary {
 }
 
 html {
-  @apply snap-y snap-proximity;
+  @apply snap-y snap-mandatory;
 }
 body > section {
   @apply snap-start;

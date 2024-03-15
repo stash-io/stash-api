@@ -20,6 +20,12 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
 
+      - name: Copy application config from secrets
+        env:
+          APPLICATION_CONFIG_YAML: ${{ secrets.APPLICATION_CONFIG_YAML }}
+        run: |
+            echo $APPLICATION_CONFIG_YAML | base64 -d > src/main/resources/application.yaml
+
       - name: Build
         run: ./gradlew buildFatJar
 

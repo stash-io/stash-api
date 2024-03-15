@@ -1,4 +1,5 @@
 ktor:
+  development: true
   application:
     modules:
       - eu.tortitas.stash.ApplicationKt.module

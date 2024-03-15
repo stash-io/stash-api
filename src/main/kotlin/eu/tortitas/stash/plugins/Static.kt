@@ -1,13 +1,19 @@
 package eu.tortitas.stash.plugins
 
+import eu.tortitas.stash.services.LogService
 import io.ktor.server.application.*
 import io.ktor.server.http.content.*
 import io.ktor.server.routing.*
+import io.ktor.util.logging.*
 import kotlinx.coroutines.*
 import java.io.File
 
 fun Application.configureStatic() {
-    handleNode()
+    val isDevelopment = environment.config.propertyOrNull("ktor.development")?.getString() == "true"
+    if (isDevelopment) {
+        LogService.log("Running in development mode. Starting Node.js build watcher.")
+        handleNode()
+    }
 
     routing {
         staticFiles("/", File("www/dist"))
@@ -15,11 +21,7 @@ fun Application.configureStatic() {
 }
 
 fun handleNode() {
-    if (System.getProperty("io.ktor.development") != "true") {
-        return
-    }
-
-    val wwwPathName = System.getProperty("user.dir") + "/www"
+    val wwwPathName = "www"
 
     installNodeDependenciesAndBuild(wwwPathName)
     runBlocking {

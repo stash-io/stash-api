@@ -1,7 +1,7 @@
 {
   "scripts": {
     "build:watch": "watch 'npm run build' ./src/",
-    "build": "mkdir dist && npm run build:html && npm run build:css && npm run build:assets",
+    "build": "mkdir -p dist && npm run build:html && npm run build:css && npm run build:assets",
     "build:html": "cp ./src/*.html ./dist/",
     "build:assets": "cp -r ./assets ./dist/",
     "build:css": "tailwindcss build ./src/styles.css -o ./dist/styles.css"
