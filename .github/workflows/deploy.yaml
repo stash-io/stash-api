@@ -23,8 +23,9 @@ jobs:
       - name: Copy application config from secrets
         env:
           APPLICATION_CONFIG_YAML: ${{ secrets.APPLICATION_CONFIG_YAML }}
+        shell: bash
         run: |
-            echo $APPLICATION_CONFIG_YAML | base64 -d > src/main/resources/application.yaml
+          echo $APPLICATION_CONFIG_YAML > src/main/resources/application.yaml
 
       - name: Build
         run: ./gradlew buildFatJar
