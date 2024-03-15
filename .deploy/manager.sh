@@ -20,8 +20,7 @@ case $1 in
 start)
   echo "Starting $SERVICE_NAME ..."
   if [ ! -f $PID_PATH_NAME ]; then
-    # https://superuser.com/questions/1361397/how-to-change-directory-and-spin-off-process
-    (cd $TARGET_DIR && nohup java -jar $PATH_TO_JAR /tmp 2>> /tmp/$SERVICE_NAME.log >>/dev/null) &
+    nohup java -jar $PATH_TO_JAR /tmp 2>> /tmp/$SERVICE_NAME.log >>/dev/null &
     echo $! > $PID_PATH_NAME
 
     echo "$SERVICE_NAME started ..."
