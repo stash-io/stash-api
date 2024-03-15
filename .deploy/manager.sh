@@ -14,11 +14,7 @@ PATH_TO_JAR=$TARGET_DIR/eu.tortitas.stash.stash-api-all.jar
 
 PID_PATH_NAME=/tmp/$SERVICE_NAME-pid
 
-pwd
-
 cd $TARGET_DIR
-
-pwd
 
 case $1 in
 start)
