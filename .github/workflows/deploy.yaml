@@ -47,6 +47,6 @@ jobs:
           REMOTE_USER: ${{ secrets.DEPLOY_REMOTE_USER }}
           TARGET: ${{ secrets.DEPLOY_REMOTE_TARGET }}
           SCRIPT_AFTER: |
-            docker-compose -f stash/publish/compose.yaml -p stash up -d
-            stash/publish/manager.sh stop
+            docker-compose -f stash/publish/compose.yaml -p stash up -d &&
+            stash/publish/manager.sh stop &&
             stash/publish/manager.sh start
