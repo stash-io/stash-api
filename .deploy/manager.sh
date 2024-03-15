@@ -13,6 +13,8 @@ SERVICE_NAME=stash
 PATH_TO_JAR=$TARGET_DIR/eu.tortitas.stash.stash-api-all.jar
 
 PID_PATH_NAME=/tmp/$SERVICE_NAME-pid
+ERROR_LOG_PATH_NAME=/var/log/$SERVICE_NAME-error.log
+LOG_PATH_NAME=/var/log/$SERVICE_NAME.log
 
 cd $TARGET_DIR
 
@@ -20,7 +22,7 @@ case $1 in
 start)
   echo "Starting $SERVICE_NAME ..."
   if [ ! -f $PID_PATH_NAME ]; then
-    nohup java -jar $PATH_TO_JAR /tmp 2>> /tmp/$SERVICE_NAME.log >>/dev/null &
+    nohup java -jar $PATH_TO_JAR /tmp 2>> $ERROR_LOG_PATH_NAME >>$LOG_PATH_NAME &
     echo $! > $PID_PATH_NAME
 
     echo "$SERVICE_NAME started ..."
