@@ -2,9 +2,9 @@ name: Test
 
 on:
   push:
-    branches: [ "master" ]
+    branches: ["master"]
   pull_request:
-    branches: [ "master" ]
+    branches: ["master"]
 
 jobs:
   test:
@@ -23,12 +23,17 @@ jobs:
 
       - uses: actions/setup-java@v3
         with:
-          java-version: '17'
-          distribution: 'temurin'
+          java-version: "17"
+          distribution: "temurin"
           cache: gradle
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
+
+      - name: Build www
+        run: |
+          npm install --prefix www
+          npm run --prefix www build
 
       - name: Run tests
         run: ./gradlew test
