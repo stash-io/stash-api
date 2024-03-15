@@ -14,13 +14,17 @@ PATH_TO_JAR=$TARGET_DIR/eu.tortitas.stash.stash-api-all.jar
 
 PID_PATH_NAME=/tmp/$SERVICE_NAME-pid
 
+pwd
+
 cd $TARGET_DIR
+
+pwd
 
 case $1 in
 start)
   echo "Starting $SERVICE_NAME ..."
   if [ ! -f $PID_PATH_NAME ]; then
-    nohup java -jar $PATH_TO_JAR /tmp 2>> /dev/null >>/dev/null &
+    nohup java -jar $PATH_TO_JAR /tmp 2>> /tmp/$SERVICE_NAME.log >>/dev/null &
       echo $! > $PID_PATH_NAME
 
     echo "$SERVICE_NAME started ..."
