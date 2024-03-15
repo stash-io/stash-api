@@ -34,6 +34,7 @@ jobs:
           cp build/libs/eu.tortitas.stash.stash-api-all.jar publish
           cp compose.yaml publish
           cp -r www/dist publish/www/dist
+          cp .deploy/manager.sh publish
 
       # Public key is ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINB2yDOCpBdy0x3DHOaVHMCtpayJ72bFypGRw8rX3YO6 vgarciaf@hey.com
       - name: Deploy to Server
@@ -47,4 +48,5 @@ jobs:
           TARGET: ${{ secrets.DEPLOY_REMOTE_TARGET }}
           SCRIPT_AFTER: |
             docker-compose -f stash/publish/compose.yaml -p stash up -d
-            systemctl restart --user stash.service
+            stash/publish/manager.sh stop
+            stash/publish/manager.sh start
