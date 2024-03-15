@@ -38,6 +38,7 @@ jobs:
       - name: Create publish folder
         run: |
           mkdir -p publish/www
+          cp src/main/resources/application.yaml publish
           cp build/libs/eu.tortitas.stash.stash-api-all.jar publish
           cp compose.yaml publish
           cp -r www/dist publish/www/dist
