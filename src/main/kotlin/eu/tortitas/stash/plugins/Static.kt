@@ -15,19 +15,23 @@ fun Application.configureStatic() {
 }
 
 fun handleNode() {
-    installNodeDependenciesAndBuild()
+    val wwwPathName = System.getProperty("user.dir") + "/www"
+
+    installNodeDependenciesAndBuild(wwwPathName)
     runBlocking {
-        startBuildWatcher()
+        startBuildWatcher(wwwPathName)
     }
 }
 
-fun installNodeDependenciesAndBuild() {
-    ProcessBuilder("npm", "install").directory(File("www")).start().waitFor()
-    ProcessBuilder("npm", "run", "build").directory(File("www")).start().waitFor()
+fun installNodeDependenciesAndBuild(wwwPathName: String) {
+    val workingDirectory = File(wwwPathName)
+
+    ProcessBuilder("npm", "install").directory(workingDirectory).start().waitFor()
+    ProcessBuilder("npm", "run", "build").directory(workingDirectory).start().waitFor()
 }
 
-suspend fun startBuildWatcher() = coroutineScope {
+suspend fun startBuildWatcher(wwwPathName: String) = coroutineScope {
     launch {
-        ProcessBuilder("npm", "run", "build:watch").directory(File("www")).start()
+        ProcessBuilder("npm", "run", "build:watch").directory(File(wwwPathName)).start()
     }
 }
