@@ -15,6 +15,10 @@ fun Application.configureStatic() {
 }
 
 fun handleNode() {
+    if (System.getProperty("io.ktor.development") != "true") {
+        return
+    }
+
     val wwwPathName = System.getProperty("user.dir") + "/www"
 
     installNodeDependenciesAndBuild(wwwPathName)
