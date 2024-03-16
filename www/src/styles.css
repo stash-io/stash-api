@@ -73,3 +73,39 @@ body > section:last-of-type > article {
   @apply w-[300px] min-h-[150px];
   @apply flex flex-col gap-3;
 }
+
+.price {
+  @apply bg-white shadow-md p-8 my-auto;
+  @apply border border-muted rounded-3xl;
+  @apply flex flex-col justify-between;
+  @apply w-[300px] h-[400px];
+  @apply sm:w-[350px] sm:h-[450px];
+}
+.price:nth-of-type(2) {
+  @apply lg:border-primary;
+  @apply lg:h-[500px];
+}
+.price:first-of-type {
+  @apply lg:border-r-0 lg:rounded-r-none;
+}
+.price:last-of-type {
+  @apply lg:border-l-0 lg:rounded-l-none;
+}
+.price > h2,
+.price > h3 {
+  @apply text-2xl font-semibold;
+}
+.price > p,
+.price > ul > li {
+  @apply text-sm;
+}
+.price > ul {
+  @apply flex flex-col gap-2;
+}
+.price > ul > li {
+  @apply pl-6 text-sm;
+
+  background-image: url("assets/icons/check.svg");
+  background-repeat: no-repeat;
+  background-position: 0 50%;
+}
