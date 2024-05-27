@@ -9,11 +9,11 @@ import kotlinx.coroutines.*
 import java.io.File
 
 fun Application.configureStatic() {
-    val isDevelopment = environment.config.propertyOrNull("ktor.development")?.getString() == "true"
-    if (isDevelopment) {
-        LogService.log("Running in development mode. Starting Node.js build watcher.")
-        handleNode()
-    }
+//    val isDevelopment = environment.config.propertyOrNull("ktor.development")?.getString() == "true"
+//    if (isDevelopment) {
+//        LogService.log("Running in development mode. Starting Node.js build watcher.")
+//        handleNode()
+//    }
 
     routing {
         staticFiles("/", File("www/dist"))
