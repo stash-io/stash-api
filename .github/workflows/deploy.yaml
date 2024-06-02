@@ -34,5 +34,5 @@ jobs:
           REMOTE_USER: ${{ secrets.DEPLOY_REMOTE_USER }}
           TARGET: ${{ secrets.DEPLOY_REMOTE_TARGET }}
           SCRIPT_AFTER: |
-            cd ${{ secrets.DEPLOY_REMOTE_TARGET }}/publish
-            docker-compose -f compose.yaml -p stash up -d
+            cd ${{ secrets.DEPLOY_REMOTE_TARGET }}
+            docker-compose -f compose.yaml -p stash up -d --build
