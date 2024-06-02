@@ -12,7 +12,7 @@ import kotlinx.serialization.Serializable
 data class LoginRequest(val email: String, val password: String)
 
 @Serializable
-data class RegisterRequest(val email: String, val password: String)
+data class RegisterRequest(val username: String, val email: String, val password: String)
 
 fun Route.authRoute(application: Application) {
     val jwtService = application.provideJwtService()
@@ -29,7 +29,7 @@ fun Route.authRoute(application: Application) {
                 return@post
             }
 
-            val id = userService.create(ExposedUser(request.email, request.password))
+            val id = userService.create(ExposedUser(request.username, request.email, request.password))
             call.respond(HttpStatusCode.Created, id)
         }
 
@@ -38,13 +38,13 @@ fun Route.authRoute(application: Application) {
 
             val user = userService.readByEmail(request.email)
 
-            if (user == null) {
-                call.respond(HttpStatusCode.Unauthorized, "Invalid user")
+            if (user == null || user.password != request.password) {
+                call.respond(HttpStatusCode.Unauthorized, "Invalid user or password")
                 return@post
             }
 
             val token = jwtService.makeToken(user.email)
-            call.respond(hashMapOf("token" to token))
+            call.respond(hashMapOf("token" to token, "username" to user.username))
         }
     }
 }

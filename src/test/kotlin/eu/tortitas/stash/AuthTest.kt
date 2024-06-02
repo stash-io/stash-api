@@ -32,7 +32,7 @@ class AuthTest {
         client
             .post("/api/auth/register") {
                 contentType(ContentType.Application.Json)
-                setBody("{\"email\":\"test@test.test\",\"password\":\"test\"}")
+                setBody("{\"username\":\"Test\",\"email\":\"test@test.test\",\"password\":\"test\"}")
             }
             .apply { assertEquals(HttpStatusCode.Created, status) }
     }
@@ -48,14 +48,15 @@ class AuthTest {
         client
             .post("/api/auth/register") {
                 contentType(ContentType.Application.Json)
-                setBody("{\"email\":\"test@test.test\",\"password\":\"test\"}")
+                setBody("{\"username\":\"Test\",\"email\":\"test@test.test\",\"password\":\"test\"}")
             }
             .apply { assertEquals(HttpStatusCode.Created, status) }
+
 
         client
             .post("/api/auth/register") {
                 contentType(ContentType.Application.Json)
-                setBody("{\"email\":\"test@test.test\",\"password\":\"test\"}")
+                setBody("{\"username\":\"Test\",\"email\":\"test@test.test\",\"password\":\"test\"}")
             }
             .apply { assertEquals(HttpStatusCode.Conflict, status) }
     }
@@ -70,7 +71,7 @@ class AuthTest {
                 }
 
                 val userService = provideUserService()
-                userService.create(ExposedUser("indatabase@test.com", "test"))
+                userService.create(ExposedUser("Test", "indatabase@test.com", "test"))
             }
         }
 
@@ -82,9 +83,11 @@ class AuthTest {
             .apply {
                 assertEquals(HttpStatusCode.OK, status)
 
-                @Serializable data class Response(val token: String)
+                @Serializable data class Response(val token: String, val username: String)
                 val bodyParsed = Json.decodeFromString<Response>(bodyAsText())
                 assertNotNull(bodyParsed.token)
+                assertNotNull(bodyParsed.username)
+                assertEquals(bodyParsed.username, "Test")
             }
     }
 }
