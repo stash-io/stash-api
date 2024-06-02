@@ -26,7 +26,7 @@ jobs:
       - name: Create publish folder
         run: |
           mkdir -p publish/www
-          cp -r ./* publish
+          cp -r !(publish) publish
 
       # Public key is ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINB2yDOCpBdy0x3DHOaVHMCtpayJ72bFypGRw8rX3YO6 vgarciaf@hey.com
       - name: Deploy to Server
