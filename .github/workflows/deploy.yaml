@@ -25,8 +25,8 @@ jobs:
 
       - name: Create publish folder
         run: |
-          mkdir -p publish/www
-          cp -r !(publish) publish
+          mkdir -p /tmp/publish/www
+          cp -r . /tmp/publish/www
 
       # Public key is ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINB2yDOCpBdy0x3DHOaVHMCtpayJ72bFypGRw8rX3YO6 vgarciaf@hey.com
       - name: Deploy to Server
@@ -34,7 +34,7 @@ jobs:
         with:
           SSH_PRIVATE_KEY: ${{ secrets.DEPLOY_PRIVATE_KEY }}
           ARGS: "-rlgoDzvc -i --delete"
-          SOURCE: "publish"
+          SOURCE: "/tmp/publish"
           REMOTE_HOST: ${{ secrets.DEPLOY_REMOTE_HOST }}
           REMOTE_USER: ${{ secrets.DEPLOY_REMOTE_USER }}
           TARGET: ${{ secrets.DEPLOY_REMOTE_TARGET }}
