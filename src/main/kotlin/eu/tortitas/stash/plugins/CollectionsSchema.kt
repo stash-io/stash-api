@@ -39,9 +39,9 @@ class CollectionService(private val database: Database) {
         }[Collections.id]
     }
 
-    suspend fun read(id: Int): ExposedCollection? {
+    suspend fun read(id: Int, userId: Int): ExposedCollection? {
         return dbQuery {
-            Collections.select { Collections.id eq id }
+            Collections.select { Collections.id eq id and (Collections.userId eq userId) }
                 .map { ExposedCollection(
                     it[Collections.title], it[Collections.description], it[Collections.published], it[Collections.userId], it[Collections.id]
                 ) }
@@ -57,20 +57,19 @@ class CollectionService(private val database: Database) {
         }
     }
 
-    suspend fun update(id: Int, user: ExposedCollection) {
+    suspend fun update(id: Int, userId: Int, collection: ExposedCollection) {
         dbQuery {
-            Collections.update({ Collections.id eq id }) {
-                it[title] = user.title
-                it[description] = user.description
-                it[published] = user.published
-                it[userId] = user.userId
+            Collections.update({ Collections.id eq id and (Collections.userId eq userId) }) {
+                it[title] = collection.title
+                it[description] = collection.description
+                it[published] = collection.published
             }
         }
     }
 
-    suspend fun delete(id: Int) {
+    suspend fun delete(id: Int, userId: Int) {
         dbQuery {
-            Collections.deleteWhere { Collections.id.eq(id) }
+            Collections.deleteWhere { Collections.id.eq(id) and (Collections.userId eq userId) }
         }
     }
 }
