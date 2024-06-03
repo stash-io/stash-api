@@ -3,6 +3,7 @@ package eu.tortitas.stash.plugins
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
 import eu.tortitas.stash.routes.authRoute
+import eu.tortitas.stash.routes.collectionsRoute
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.http.content.*
@@ -29,6 +30,7 @@ fun Application.configureRouting() {
         route("/api") {
             get("/ping") { call.respondText("pong") }
             authRoute(this@configureRouting)
+            collectionsRoute(this@configureRouting)
         }
     }
 }

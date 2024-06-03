@@ -1,23 +1,18 @@
 package eu.tortitas.stash
 
 import eu.tortitas.stash.plugins.*
-import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
-import io.ktor.server.application.*
 import io.ktor.server.testing.*
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
-import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.deleteAll
 import org.jetbrains.exposed.sql.transactions.transaction
-import org.slf4j.MDC.put
-import kotlin.test.*
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
 
 class AuthTest {
     @Test
@@ -25,6 +20,7 @@ class AuthTest {
         application {
             val database = getPostgresDatabase()
             transaction(database) {
+                CollectionService.Collections.deleteAll()
                 UserService.Users.deleteAll()
             }
         }
@@ -41,6 +37,7 @@ class AuthTest {
         application {
             val database = getPostgresDatabase()
             transaction(database) {
+                CollectionService.Collections.deleteAll()
                 UserService.Users.deleteAll()
             }
         }
@@ -67,11 +64,12 @@ class AuthTest {
             runBlocking {
                 val database = getPostgresDatabase()
                 transaction(database) {
+                    CollectionService.Collections.deleteAll()
                     UserService.Users.deleteAll()
                 }
 
                 val userService = provideUserService()
-                userService.create(ExposedUser("Test", "indatabase@test.com", "test"))
+                userService.create(ExposedUser("Test", "indatabase@test.com", "test", "tier1", null))
             }
         }
 

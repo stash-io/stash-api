@@ -9,13 +9,14 @@ import kotlinx.coroutines.Dispatchers
 import org.jetbrains.exposed.sql.*
 
 @Serializable
-data class ExposedUser(val username: String, val email: String, val password: String)
+data class ExposedUser(val username: String, val email: String, val password: String, val role: String, val id: Int?)
 class UserService(private val database: Database) {
     object Users : Table() {
         val id = integer("id").autoIncrement()
         val username = varchar("username", length = 50)
         val email = varchar("email", length = 50)
         val password = text("password")
+        val role = varchar("role", length = 50) // 'tier1' | 'tier2' | 'tier3' | 'admin'
 
         override val primaryKey = PrimaryKey(id)
     }
@@ -34,13 +35,15 @@ class UserService(private val database: Database) {
             it[username] = user.username
             it[email] = user.email
             it[password] = user.password
+            it[role] = user.role
         }[Users.id]
     }
 
     suspend fun read(id: Int): ExposedUser? {
         return dbQuery {
             Users.select { Users.id eq id }
-                .map { ExposedUser(it[Users.username], it[Users.email], it[Users.password]) }
+                .map { ExposedUser(
+                    it[Users.username], it[Users.email], it[Users.password], it[Users.role], it[Users.id]) }
                 .singleOrNull()
         }
     }
@@ -48,7 +51,7 @@ class UserService(private val database: Database) {
     suspend fun readByEmail(email: String): ExposedUser? {
         return dbQuery {
             Users.select { Users.email eq email }
-                .map { ExposedUser(it[Users.username], it[Users.email], it[Users.password]) }
+                .map { ExposedUser(it[Users.username], it[Users.email], it[Users.password], it[Users.role], it[Users.id]) }
                 .singleOrNull()
         }
     }
@@ -59,6 +62,7 @@ class UserService(private val database: Database) {
                 it[username] = user.username
                 it[email] = user.email
                 it[password] = user.password
+                it[role] = user.role
             }
         }
     }

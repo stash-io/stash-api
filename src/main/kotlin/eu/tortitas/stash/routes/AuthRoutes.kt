@@ -29,7 +29,7 @@ fun Route.authRoute(application: Application) {
                 return@post
             }
 
-            val id = userService.create(ExposedUser(request.username, request.email, request.password))
+            val id = userService.create(ExposedUser(request.username, request.email, request.password, "tier1", null))
             call.respond(HttpStatusCode.Created, id)
         }
 
