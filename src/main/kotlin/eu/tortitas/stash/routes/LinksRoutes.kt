@@ -1,6 +1,9 @@
 package eu.tortitas.stash.routes
 
-import eu.tortitas.stash.plugins.*
+import eu.tortitas.stash.plugins.ExposedLink
+import eu.tortitas.stash.plugins.provideLinkService
+import eu.tortitas.stash.plugins.provideJwtService
+import eu.tortitas.stash.plugins.provideUserService
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
@@ -11,26 +14,29 @@ import io.ktor.server.routing.*
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class CreateCollectionRequest(
+data class CreateLinkRequest(
     val title: String,
     val description: String,
-    val published: Boolean
+    val url: String?,
+    val published: Boolean,
+    val collectionId: Int?
 )
 
 @Serializable
-data class UpdateCollectionRequest(
+data class UpdateLinkRequest(
     val id: Int,
     val title: String,
     val description: String,
-    val published: Boolean
+    val url: String?,
+    val published: Boolean,
+    val collectionId: Int?
 )
 
-fun Route.collectionsRoute(application: Application) {
+fun Route.linksRoute(application: Application) {
     val userService = application.provideUserService()
-    val collectionService = application.provideCollectionService()
     val linkService = application.provideLinkService()
 
-    route("/collections") {
+    route("/links") {
         authenticate() {
             post("/create") {
                 val user = userService.readByEmail(call.principal<JWTPrincipal>()!!.payload.getClaim("email").asString())
@@ -40,13 +46,15 @@ fun Route.collectionsRoute(application: Application) {
                     return@post
                 }
 
-                val request = call.receive<CreateCollectionRequest>()
+                val request = call.receive<CreateLinkRequest>()
 
-                val id = collectionService.create(ExposedCollection(
+                val id = linkService.create(ExposedLink(
                     title = request.title,
                     description = request.description,
+                    url = request.url,
                     published = request.published,
                     userId = user.id,
+                    collectionId = request.collectionId,
                     null
                 ))
 
@@ -61,13 +69,15 @@ fun Route.collectionsRoute(application: Application) {
                     return@put
                 }
 
-                val request = call.receive<UpdateCollectionRequest>()
+                val request = call.receive<UpdateLinkRequest>()
 
-                val id = collectionService.update(request.id, user.id, ExposedCollection(
+                val id = linkService.update(request.id, user.id, ExposedLink(
                     title = request.title,
                     description = request.description,
+                    url = request.url,
                     published = request.published,
                     userId = user.id,
+                    collectionId = request.collectionId,
                     null
                 ))
 
@@ -82,10 +92,10 @@ fun Route.collectionsRoute(application: Application) {
                     return@get
                 }
 
-                @Serializable data class Response(val collections: List<ExposedCollection>)
+                @Serializable data class Response(val links: List<ExposedLink>)
 
-                val collections = collectionService.readByUserId(user.id)
-                call.respond(HttpStatusCode.OK, Response(collections))
+                val links = linkService.readByUserId(user.id)
+                call.respond(HttpStatusCode.OK, Response(links))
             }
 
             get("/{id}") {
@@ -96,16 +106,16 @@ fun Route.collectionsRoute(application: Application) {
                     return@get
                 }
 
-                @Serializable data class Response(val collection: ExposedCollection)
+                @Serializable data class Response(val link: ExposedLink)
 
-                val collection = collectionService.read(call.parameters["id"]!!.toInt(), user.id)
+                val link = linkService.read(call.parameters["id"]!!.toInt(), user.id)
 
-                if (collection == null) {
-                    call.respond(HttpStatusCode.NotFound, "No collection found")
+                if (link == null) {
+                    call.respond(HttpStatusCode.NotFound, "No link found")
                     return@get
                 }
 
-                call.respond(HttpStatusCode.OK, Response(collection))
+                call.respond(HttpStatusCode.OK, Response(link))
             }
 
             delete("/{id}") {
@@ -116,25 +126,11 @@ fun Route.collectionsRoute(application: Application) {
                     return@delete
                 }
 
-                @Serializable data class Response(val collection: ExposedCollection)
+                @Serializable data class Response(val link: ExposedLink)
 
-                collectionService.delete(call.parameters["id"]!!.toInt(), user.id)
+                linkService.delete(call.parameters["id"]!!.toInt(), user.id)
 
                 call.respond(HttpStatusCode.OK)
-            }
-
-            get("/{id}/links") {
-                val user = userService.readByEmail(call.principal<JWTPrincipal>()!!.payload.getClaim("email").asString())
-
-                if (user?.id == null) {
-                    call.respond(HttpStatusCode.Unauthorized, "Invalid user")
-                    return@get
-                }
-
-                @Serializable data class Response(val links: List<ExposedLink>)
-
-                val links = linkService.readByCollectionId(call.parameters["id"]!!.toInt())
-                call.respond(HttpStatusCode.OK, Response(links))
             }
         }
     }
