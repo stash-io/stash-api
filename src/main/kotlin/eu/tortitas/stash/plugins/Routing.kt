@@ -5,6 +5,7 @@ import com.auth0.jwt.algorithms.Algorithm
 import eu.tortitas.stash.routes.authRoute
 import eu.tortitas.stash.routes.collectionsRoute
 import eu.tortitas.stash.routes.linksRoute
+import eu.tortitas.stash.routes.publishRoutes
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.http.content.*
@@ -34,5 +35,7 @@ fun Application.configureRouting() {
             collectionsRoute(this@configureRouting)
             linksRoute(this@configureRouting)
         }
+
+        publishRoutes(this@configureRouting)
     }
 }

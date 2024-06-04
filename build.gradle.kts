@@ -48,4 +48,6 @@ dependencies {
 
     implementation("io.ktor:ktor-server-content-negotiation:$ktor_version")
     implementation("io.ktor:ktor-serialization-kotlinx-json:$ktor_version")
+
+    implementation("io.ktor:ktor-server-html-builder:$ktor_version")
 }
