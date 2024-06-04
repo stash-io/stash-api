@@ -35,6 +35,7 @@ fun Route.publishRoutes(application: Application) {
                 head {
                     title { +"Links" }
                     link(rel = "stylesheet", href = "/styles.css")
+                    meta(name = "viewport", content = "width=device-width, initial-scale=1")
                 }
 
                 body {

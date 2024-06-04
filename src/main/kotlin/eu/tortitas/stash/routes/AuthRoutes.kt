@@ -44,7 +44,7 @@ fun Route.authRoute(application: Application) {
             }
 
             val token = jwtService.makeToken(user.email)
-            call.respond(hashMapOf("token" to token, "username" to user.username))
+            call.respond(hashMapOf("token" to token, "username" to user.username, "id" to user.id.toString()))
         }
     }
 }
