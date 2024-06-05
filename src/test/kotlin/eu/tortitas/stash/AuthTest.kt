@@ -20,6 +20,7 @@ class AuthTest {
         application {
             val database = getPostgresDatabase()
             transaction(database) {
+                LinkService.Links.deleteAll()
                 CollectionService.Collections.deleteAll()
                 UserService.Users.deleteAll()
             }
@@ -37,6 +38,7 @@ class AuthTest {
         application {
             val database = getPostgresDatabase()
             transaction(database) {
+                LinkService.Links.deleteAll()
                 CollectionService.Collections.deleteAll()
                 UserService.Users.deleteAll()
             }
@@ -81,7 +83,7 @@ class AuthTest {
             .apply {
                 assertEquals(HttpStatusCode.OK, status)
 
-                @Serializable data class Response(val token: String, val username: String)
+                @Serializable data class Response(val token: String, val username: String, val id: String)
                 val bodyParsed = Json.decodeFromString<Response>(bodyAsText())
                 assertNotNull(bodyParsed.token)
                 assertNotNull(bodyParsed.username)

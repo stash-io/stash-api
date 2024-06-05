@@ -56,6 +56,13 @@ class UserService(private val database: Database) {
         }
     }
 
+    suspend fun readAll(): List<ExposedUser> {
+        return dbQuery {
+            Users.selectAll().map { ExposedUser(
+                it[Users.username], it[Users.email], it[Users.password], it[Users.role], it[Users.id]) }
+        }
+    }
+
     suspend fun update(id: Int, user: ExposedUser) {
         dbQuery {
             Users.update({ Users.id eq id }) {

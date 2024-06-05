@@ -2,10 +2,7 @@ package eu.tortitas.stash.plugins
 
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
-import eu.tortitas.stash.routes.authRoute
-import eu.tortitas.stash.routes.collectionsRoute
-import eu.tortitas.stash.routes.linksRoute
-import eu.tortitas.stash.routes.publishRoutes
+import eu.tortitas.stash.routes.*
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.http.content.*
@@ -34,6 +31,7 @@ fun Application.configureRouting() {
             authRoute(this@configureRouting)
             collectionsRoute(this@configureRouting)
             linksRoute(this@configureRouting)
+            adminRoutes(this@configureRouting)
         }
 
         publishRoutes(this@configureRouting)

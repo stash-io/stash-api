@@ -14,9 +14,9 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 
-class CollectionsTest {
+class RoleAdminTest {
     @Test
-    fun testCreate() = testApplication {
+    fun testProtectedRouteWithoutRole() = testApplication {
         application {
             runBlocking {
                 val database = getPostgresDatabase()
@@ -45,18 +45,17 @@ class CollectionsTest {
                 assertNotNull(bodyParsed.username)
                 assertEquals(bodyParsed.username, "Test")
 
-                client.post("/api/collections/create") {
+                client.get("/api/admin/users/list") {
                     contentType(ContentType.Application.Json)
                     header("Authorization", "Bearer ${bodyParsed.token}")
-                    setBody("{\"title\":\"My Collection\",\"description\":\"This is a collection\",\"published\":true}")
                 }.apply {
-                    assertEquals(HttpStatusCode.Created, status)
+                    assertEquals(HttpStatusCode.Forbidden, status)
                 }
             }
     }
 
     @Test
-    fun testList() = testApplication {
+    fun testProtectedRouteWithRole() = testApplication {
         application {
             runBlocking {
                 val database = getPostgresDatabase()
@@ -67,10 +66,7 @@ class CollectionsTest {
                 }
 
                 val userService = provideUserService()
-                val userId = userService.create(ExposedUser("Test", "indatabase@test.com", "test", "tier1", null))
-
-                val collectionService = provideCollectionService()
-                collectionService.create(ExposedCollection("My Collection", "This is a collection", true, userId, null))
+                userService.create(ExposedUser("Test", "indatabase@test.com", "test", "admin", null))
             }
         }
 
@@ -88,15 +84,11 @@ class CollectionsTest {
                 assertNotNull(bodyParsed.username)
                 assertEquals(bodyParsed.username, "Test")
 
-                client.get("/api/collections/list") {
+                client.get("/api/admin/users/list") {
                     contentType(ContentType.Application.Json)
                     header("Authorization", "Bearer ${bodyParsed.token}")
                 }.apply {
                     assertEquals(HttpStatusCode.OK, status)
-                    @Serializable data class Response(val collections: List<ExposedCollection>)
-                    val bodyParsed = Json.decodeFromString<Response>(bodyAsText())
-                    assertNotNull(bodyParsed.collections)
-                    assertEquals(bodyParsed.collections.size, 1)
                 }
             }
     }
