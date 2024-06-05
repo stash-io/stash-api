@@ -32,6 +32,7 @@ fun Application.configureRouting() {
             collectionsRoute(this@configureRouting)
             linksRoute(this@configureRouting)
             adminRoutes(this@configureRouting)
+            stripeRoute(this@configureRouting)
         }
 
         publishRoutes(this@configureRouting)

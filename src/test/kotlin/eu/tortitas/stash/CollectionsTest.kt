@@ -27,7 +27,7 @@ class CollectionsTest {
                 }
 
                 val userService = provideUserService()
-                userService.create(ExposedUser("Test", "indatabase@test.com", "test", "tier1", null))
+                createTestUser(userService)
             }
         }
 
@@ -39,7 +39,7 @@ class CollectionsTest {
             .apply {
                 assertEquals(HttpStatusCode.OK, status)
 
-                @Serializable data class Response(val token: String, val username: String, val id: String)
+                @Serializable data class Response(val token: String, val username: String, val id: String, val role: String)
                 val bodyParsed = Json.decodeFromString<Response>(bodyAsText())
                 assertNotNull(bodyParsed.token)
                 assertNotNull(bodyParsed.username)
@@ -67,7 +67,7 @@ class CollectionsTest {
                 }
 
                 val userService = provideUserService()
-                val userId = userService.create(ExposedUser("Test", "indatabase@test.com", "test", "tier1", null))
+                val userId =createTestUser(userService)
 
                 val collectionService = provideCollectionService()
                 collectionService.create(ExposedCollection("My Collection", "This is a collection", true, userId, null))
@@ -82,7 +82,7 @@ class CollectionsTest {
             .apply {
                 assertEquals(HttpStatusCode.OK, status)
 
-                @Serializable data class Response(val token: String, val username: String, val id: String)
+                @Serializable data class Response(val token: String, val username: String, val id: String, val role: String)
                 val bodyParsed = Json.decodeFromString<Response>(bodyAsText())
                 assertNotNull(bodyParsed.token)
                 assertNotNull(bodyParsed.username)

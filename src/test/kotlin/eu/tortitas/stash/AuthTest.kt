@@ -14,6 +14,10 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 
+public suspend fun createTestUser(userService: UserService): Int {
+    return userService.create(ExposedUser("Test", "indatabase@test.com", "test", "tier1", null, null))
+}
+
 class AuthTest {
     @Test
     fun testRegister() = testApplication {
@@ -66,12 +70,13 @@ class AuthTest {
             runBlocking {
                 val database = getPostgresDatabase()
                 transaction(database) {
+                    LinkService.Links.deleteAll()
                     CollectionService.Collections.deleteAll()
                     UserService.Users.deleteAll()
                 }
 
                 val userService = provideUserService()
-                userService.create(ExposedUser("Test", "indatabase@test.com", "test", "tier1", null))
+                createTestUser(userService)
             }
         }
 
@@ -83,7 +88,7 @@ class AuthTest {
             .apply {
                 assertEquals(HttpStatusCode.OK, status)
 
-                @Serializable data class Response(val token: String, val username: String, val id: String)
+                @Serializable data class Response(val token: String, val username: String, val id: String, val role: String)
                 val bodyParsed = Json.decodeFromString<Response>(bodyAsText())
                 assertNotNull(bodyParsed.token)
                 assertNotNull(bodyParsed.username)

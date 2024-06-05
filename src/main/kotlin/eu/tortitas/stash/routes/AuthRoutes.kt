@@ -3,6 +3,8 @@ package eu.tortitas.stash.routes
 import eu.tortitas.stash.plugins.*
 import io.ktor.http.*
 import io.ktor.server.application.*
+import io.ktor.server.auth.*
+import io.ktor.server.auth.jwt.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -29,7 +31,7 @@ fun Route.authRoute(application: Application) {
                 return@post
             }
 
-            val id = userService.create(ExposedUser(request.username, request.email, request.password, "tier1", null))
+            val id = userService.create(ExposedUser(request.username, request.email, request.password, "free", null, null))
             call.respond(HttpStatusCode.Created, id)
         }
 
@@ -44,7 +46,21 @@ fun Route.authRoute(application: Application) {
             }
 
             val token = jwtService.makeToken(user.email)
-            call.respond(hashMapOf("token" to token, "username" to user.username, "id" to user.id.toString()))
+            call.respond(hashMapOf("token" to token, "username" to user.username, "id" to user.id.toString(), "role" to user.role))
+        }
+
+        authenticate {
+            get("/refresh") {
+                val user =
+                    userService.readByEmail(call.principal<JWTPrincipal>()!!.payload.getClaim("email").asString())
+                if (user == null) {
+                    call.respond(HttpStatusCode.Unauthorized, "Invalid token")
+                    return@get
+                }
+
+                val newToken = jwtService.makeToken(user.email)
+                call.respond(hashMapOf("token" to newToken, "username" to user.username, "id" to user.id.toString(), "role" to user.role, "email" to user.email))
+            }
         }
     }
 }

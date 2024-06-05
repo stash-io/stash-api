@@ -27,7 +27,7 @@ class RoleAdminTest {
                 }
 
                 val userService = provideUserService()
-                userService.create(ExposedUser("Test", "indatabase@test.com", "test", "tier1", null))
+                createTestUser(userService)
             }
         }
 
@@ -39,7 +39,7 @@ class RoleAdminTest {
             .apply {
                 assertEquals(HttpStatusCode.OK, status)
 
-                @Serializable data class Response(val token: String, val username: String, val id: String)
+                @Serializable data class Response(val token: String, val username: String, val id: String, val role: String)
                 val bodyParsed = Json.decodeFromString<Response>(bodyAsText())
                 assertNotNull(bodyParsed.token)
                 assertNotNull(bodyParsed.username)
@@ -66,7 +66,7 @@ class RoleAdminTest {
                 }
 
                 val userService = provideUserService()
-                userService.create(ExposedUser("Test", "indatabase@test.com", "test", "admin", null))
+                userService.create(ExposedUser("Test", "indatabase@test.com", "test", "admin", null, null))
             }
         }
 
@@ -78,7 +78,7 @@ class RoleAdminTest {
             .apply {
                 assertEquals(HttpStatusCode.OK, status)
 
-                @Serializable data class Response(val token: String, val username: String, val id: String)
+                @Serializable data class Response(val token: String, val username: String, val id: String, val role: String)
                 val bodyParsed = Json.decodeFromString<Response>(bodyAsText())
                 assertNotNull(bodyParsed.token)
                 assertNotNull(bodyParsed.username)

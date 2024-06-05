@@ -50,4 +50,8 @@ dependencies {
     implementation("io.ktor:ktor-serialization-kotlinx-json:$ktor_version")
 
     implementation("io.ktor:ktor-server-html-builder:$ktor_version")
+
+    implementation("com.stripe:stripe-java:25.10.0")
+
+    implementation("ch.qos.logback:logback-classic:$logback_version")
 }
