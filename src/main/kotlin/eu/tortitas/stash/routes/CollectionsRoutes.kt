@@ -116,10 +116,13 @@ fun Route.collectionsRoute(application: Application) {
                     return@delete
                 }
 
-                @Serializable data class Response(val collection: ExposedCollection)
+                val collectionId = call.parameters["id"]!!.toInt()
+                val links = linkService.readByCollectionId(collectionId)
 
-                collectionService.delete(call.parameters["id"]!!.toInt(), user.id)
-
+                links.forEach { link ->
+                    linkService.update(link.id as Int, user.id, link.copy(collectionId = null))
+                }
+                collectionService.delete(collectionId, user.id)
                 call.respond(HttpStatusCode.OK)
             }
 

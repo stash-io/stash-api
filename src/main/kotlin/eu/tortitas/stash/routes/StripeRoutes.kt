@@ -29,8 +29,8 @@ const val STRIPE_TIER_3_PRICE_ID = "price_1POOGAJ71FWx9p48g56Ivhs4"
 
 fun Route.stripeRoute(application: Application) {
     val userService = application.provideUserService()
-    val endpointSecret = "whsec_cV5iYGLTpodeG74faqHZtbVN0dvUKiBG"
-    //val endpointSecret = "whsec_0484b70c26166c603e2a3cdb66aed8dbad5e7c43c6957bf375aac0d7b278b726"
+    //val endpointSecret = "whsec_cV5iYGLTpodeG74faqHZtbVN0dvUKiBG"
+    val endpointSecret = "whsec_0484b70c26166c603e2a3cdb66aed8dbad5e7c43c6957bf375aac0d7b278b726"
 
     route("/stripe") {
         authenticate {
