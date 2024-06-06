@@ -16,4 +16,5 @@ fun Application.module() {
     configureSecurity()
     configureStatic()
     configureRouting()
+    configureJobs()
 }

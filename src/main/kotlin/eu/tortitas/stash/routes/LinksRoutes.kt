@@ -54,6 +54,7 @@ fun Route.linksRoute(application: Application) {
                     url = request.url,
                     published = request.published,
                     userId = user.id,
+                    null,
                     collectionId = request.collectionId,
                     null
                 ))
@@ -77,6 +78,7 @@ fun Route.linksRoute(application: Application) {
                     url = request.url,
                     published = request.published,
                     userId = user.id,
+                    null,
                     collectionId = request.collectionId,
                     null
                 ))

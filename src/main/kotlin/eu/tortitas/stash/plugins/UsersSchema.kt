@@ -9,7 +9,7 @@ import kotlinx.coroutines.Dispatchers
 import org.jetbrains.exposed.sql.*
 
 @Serializable
-data class ExposedUser(val username: String, val email: String, val password: String, val role: String, val stripeCustomerId: String?, val id: Int?)
+data class ExposedUser(val username: String, val email: String, val password: String, val role: String, val reminderDayOfWeek: String?, val stripeCustomerId: String?, val id: Int?)
 class UserService(private val database: Database) {
     object Users : Table() {
         val id = integer("id").autoIncrement()
@@ -17,6 +17,7 @@ class UserService(private val database: Database) {
         val email = varchar("email", length = 50)
         val password = text("password")
         val role = varchar("role", length = 50) // 'tier1' | 'tier2' | 'tier3' | 'admin'
+        val reminderDayOfWeek = varchar("reminderDayOfWeek", length = 50).nullable() // from 1 (Monday) to 7 (Sunday)
         val stripeCustomerId = text("stripe_customer_id").nullable()
 
         override val primaryKey = PrimaryKey(id)
@@ -25,7 +26,7 @@ class UserService(private val database: Database) {
     init {
         transaction(database) {
             SchemaUtils.create(Users)
-            //SchemaUtils.createMissingTablesAndColumns(Users)
+            SchemaUtils.createMissingTablesAndColumns(Users)
         }
     }
 
@@ -38,6 +39,7 @@ class UserService(private val database: Database) {
             it[email] = user.email
             it[password] = user.password
             it[role] = user.role
+            it[reminderDayOfWeek] = user.reminderDayOfWeek
             it[stripeCustomerId] = user.stripeCustomerId
         }[Users.id]
     }
@@ -50,6 +52,7 @@ class UserService(private val database: Database) {
                     it[Users.email],
                     it[Users.password],
                     it[Users.role],
+                    it[Users.reminderDayOfWeek],
                     it[Users.stripeCustomerId],
                     it[Users.id])
                 }
@@ -65,6 +68,7 @@ class UserService(private val database: Database) {
                     it[Users.email],
                     it[Users.password],
                     it[Users.role],
+                    it[Users.reminderDayOfWeek],
                     it[Users.stripeCustomerId],
                     it[Users.id])
                 }
@@ -79,6 +83,7 @@ class UserService(private val database: Database) {
                 it[Users.email],
                 it[Users.password],
                 it[Users.role],
+                it[Users.reminderDayOfWeek],
                 it[Users.stripeCustomerId],
                 it[Users.id])
                 }
@@ -92,6 +97,7 @@ class UserService(private val database: Database) {
                 it[email] = user.email
                 it[password] = user.password
                 it[role] = user.role
+                it[reminderDayOfWeek] = user.reminderDayOfWeek
                 it[stripeCustomerId] = user.stripeCustomerId
             }
         }

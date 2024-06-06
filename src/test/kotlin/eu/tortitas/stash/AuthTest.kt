@@ -1,5 +1,6 @@
 package eu.tortitas.stash
 
+import at.favre.lib.crypto.bcrypt.BCrypt
 import eu.tortitas.stash.plugins.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
@@ -14,9 +15,10 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 
-public suspend fun createTestUser(userService: UserService): Int {
-    return userService.create(ExposedUser("Test", "indatabase@test.com", "test", "tier1", null, null))
+public suspend fun createTestUser(userService: UserService, role: String = "tier1"): Int {
+    return userService.create(ExposedUser("Test", "indatabase@test.com", BCrypt.withDefaults().hashToString(12, "test".toCharArray()), role, null, null, null))
 }
+@Serializable public data class LoginResponse(val token: String, val username: String, val id: String, val role: String, val reminderDayOfWeek: String?)
 
 class AuthTest {
     @Test
@@ -88,8 +90,7 @@ class AuthTest {
             .apply {
                 assertEquals(HttpStatusCode.OK, status)
 
-                @Serializable data class Response(val token: String, val username: String, val id: String, val role: String)
-                val bodyParsed = Json.decodeFromString<Response>(bodyAsText())
+                val bodyParsed = Json.decodeFromString<LoginResponse>(bodyAsText())
                 assertNotNull(bodyParsed.token)
                 assertNotNull(bodyParsed.username)
                 assertEquals(bodyParsed.username, "Test")

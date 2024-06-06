@@ -39,8 +39,7 @@ class CollectionsTest {
             .apply {
                 assertEquals(HttpStatusCode.OK, status)
 
-                @Serializable data class Response(val token: String, val username: String, val id: String, val role: String)
-                val bodyParsed = Json.decodeFromString<Response>(bodyAsText())
+                val bodyParsed = Json.decodeFromString<LoginResponse>(bodyAsText())
                 assertNotNull(bodyParsed.token)
                 assertNotNull(bodyParsed.username)
                 assertEquals(bodyParsed.username, "Test")
@@ -82,8 +81,7 @@ class CollectionsTest {
             .apply {
                 assertEquals(HttpStatusCode.OK, status)
 
-                @Serializable data class Response(val token: String, val username: String, val id: String, val role: String)
-                val bodyParsed = Json.decodeFromString<Response>(bodyAsText())
+                val bodyParsed = Json.decodeFromString<LoginResponse>(bodyAsText())
                 assertNotNull(bodyParsed.token)
                 assertNotNull(bodyParsed.username)
                 assertEquals(bodyParsed.username, "Test")

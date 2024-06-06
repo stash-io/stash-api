@@ -11,8 +11,14 @@ jwt:
   realm: "ktor sample app"
   secret: "secret"
 
+mail:
+  host: ""
+  username: ""
+  password: ""
+  from: ""
+
 postgres:
-  #url: "jdbc:postgresql://localhost:5432/stash"
-  url: "jdbc:postgresql://db:5432/stash"
+  url: "jdbc:postgresql://localhost:5432/stash"
+  #url: "jdbc:postgresql://db:5432/stash"
   user: "stash"
   password: "secret"

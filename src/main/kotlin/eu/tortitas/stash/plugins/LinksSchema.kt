@@ -7,10 +7,14 @@ import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import kotlinx.serialization.Serializable
 import kotlinx.coroutines.Dispatchers
 import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.javatime.datetime
+import org.jetbrains.exposed.sql.javatime.timestamp
+import java.time.Instant
+import java.time.LocalDateTime
 import java.util.*
 
 @Serializable
-data class ExposedLink(val title: String, val description: String?, val url: String?, val published: Boolean, val userId: Int, val collectionId: Int?, val id: Int?)
+data class ExposedLink(val title: String, val description: String?, val url: String?, val published: Boolean, val userId: Int, val createdAt: String?, val collectionId: Int?, val id: Int?)
 class LinkService(private val database: Database) {
     object Links : Table() {
         val id = integer("id").autoIncrement()
@@ -20,6 +24,7 @@ class LinkService(private val database: Database) {
         val published = bool("published").default(false)
         val userId = (integer("user_id") references UserService.Users.id)
         val collectionId = (integer("collection_id") references CollectionService.Collections.id).nullable()
+        val createdAt = datetime("created_at").clientDefault { LocalDateTime.now() }
 
         override val primaryKey = PrimaryKey(id)
     }
@@ -48,7 +53,14 @@ class LinkService(private val database: Database) {
         return dbQuery {
             Links.select { Links.id eq id and (Links.userId eq userId) }
                 .map { ExposedLink(
-                    it[Links.title], it[Links.description], it[Links.url], it[Links.published], it[Links.userId], it[Links.collectionId], it[Links.id]
+                    it[Links.title],
+                    it[Links.description],
+                    it[Links.url],
+                    it[Links.published],
+                    it[Links.userId],
+                    it[Links.createdAt].toString(),
+                    it[Links.collectionId],
+                    it[Links.id],
                 ) }
                 .singleOrNull()
         }
@@ -58,9 +70,33 @@ class LinkService(private val database: Database) {
         return dbQuery {
             Links.select { Links.userId eq userId }
                 .map { ExposedLink(
-                    it[Links.title], it[Links.description], it[Links.url], it[Links.published], it[Links.userId], it[Links.collectionId], it[Links.id]
+                    it[Links.title],
+                    it[Links.description],
+                    it[Links.url],
+                    it[Links.published],
+                    it[Links.userId],
+                    it[Links.createdAt].toString(),
+                    it[Links.collectionId],
+                    it[Links.id]
                 ) }
                 .toList()
+        }
+    }
+
+    suspend fun readByUserIdBetweenDates(userId: Int, from: String, to: String): List<ExposedLink> {
+        return dbQuery {
+            Links.select { Links.userId eq userId and (Links.createdAt.between(from, to)) }
+            .map { ExposedLink(
+                it[Links.title],
+                it[Links.description],
+                it[Links.url],
+                it[Links.published],
+                it[Links.userId],
+                it[Links.createdAt].toString(),
+                it[Links.collectionId],
+                it[Links.id]
+            ) }
+            .toList()
         }
     }
 
@@ -68,7 +104,14 @@ class LinkService(private val database: Database) {
         return dbQuery {
             Links.select { Links.collectionId eq collectionId }
                 .map { ExposedLink(
-                    it[Links.title], it[Links.description], it[Links.url], it[Links.published], it[Links.userId], it[Links.collectionId], it[Links.id]
+                    it[Links.title],
+                    it[Links.description],
+                    it[Links.url],
+                    it[Links.published],
+                    it[Links.userId],
+                    it[Links.createdAt].toString(),
+                    it[Links.collectionId],
+                    it[Links.id]
                 ) }
                 .toList()
         }

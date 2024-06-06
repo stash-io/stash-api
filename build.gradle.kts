@@ -31,8 +31,11 @@ dependencies {
     implementation("io.ktor:ktor-server-websockets-jvm")
     implementation("io.ktor:ktor-serialization-kotlinx-json-jvm")
     implementation("io.ktor:ktor-server-content-negotiation-jvm")
+
     implementation("org.jetbrains.exposed:exposed-core:$exposed_version")
     implementation("org.jetbrains.exposed:exposed-jdbc:$exposed_version")
+    implementation("org.jetbrains.exposed:exposed-java-time:$exposed_version")
+
     implementation("com.h2database:h2:$h2_version")
     implementation("org.postgresql:postgresql:$postgres_version")
     implementation("io.ktor:ktor-server-call-logging-jvm")
@@ -54,4 +57,8 @@ dependencies {
     implementation("com.stripe:stripe-java:25.10.0")
 
     implementation("ch.qos.logback:logback-classic:$logback_version")
+
+    implementation("org.apache.commons:commons-email:1.5")
+
+    implementation("at.favre.lib:bcrypt:0.10.2")
 }

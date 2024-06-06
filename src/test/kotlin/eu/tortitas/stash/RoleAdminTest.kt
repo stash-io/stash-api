@@ -1,6 +1,7 @@
 package eu.tortitas.stash
 
 import eu.tortitas.stash.plugins.*
+import eu.tortitas.stash.routes.LoginRequest
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
@@ -39,8 +40,7 @@ class RoleAdminTest {
             .apply {
                 assertEquals(HttpStatusCode.OK, status)
 
-                @Serializable data class Response(val token: String, val username: String, val id: String, val role: String)
-                val bodyParsed = Json.decodeFromString<Response>(bodyAsText())
+                val bodyParsed = Json.decodeFromString<LoginResponse>(bodyAsText())
                 assertNotNull(bodyParsed.token)
                 assertNotNull(bodyParsed.username)
                 assertEquals(bodyParsed.username, "Test")
@@ -66,7 +66,7 @@ class RoleAdminTest {
                 }
 
                 val userService = provideUserService()
-                userService.create(ExposedUser("Test", "indatabase@test.com", "test", "admin", null, null))
+                createTestUser(userService, "admin")
             }
         }
 
@@ -78,8 +78,7 @@ class RoleAdminTest {
             .apply {
                 assertEquals(HttpStatusCode.OK, status)
 
-                @Serializable data class Response(val token: String, val username: String, val id: String, val role: String)
-                val bodyParsed = Json.decodeFromString<Response>(bodyAsText())
+                val bodyParsed = Json.decodeFromString<LoginResponse>(bodyAsText())
                 assertNotNull(bodyParsed.token)
                 assertNotNull(bodyParsed.username)
                 assertEquals(bodyParsed.username, "Test")
