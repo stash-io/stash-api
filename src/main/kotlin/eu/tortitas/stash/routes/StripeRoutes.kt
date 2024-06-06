@@ -5,6 +5,8 @@ import com.stripe.model.Customer
 import com.stripe.model.Invoice
 import com.stripe.model.PaymentIntent
 import com.stripe.model.SetupIntent.PaymentMethodOptions
+import com.stripe.model.Source.SourceOrder.Item
+import com.stripe.model.Subscription
 import com.stripe.net.Webhook
 import com.stripe.param.PaymentIntentCreateParams
 import eu.tortitas.stash.plugins.provideLinkService
@@ -17,12 +19,17 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import com.stripe.param.CustomerCreateParams
+import com.stripe.param.SubscriptionCreateParams
+import com.stripe.param.SubscriptionCreateParams.PaymentSettings.SaveDefaultPaymentMethod
+import java.util.*
 
-
+const val STRIPE_TIER_1_PRICE_ID = "price_1POOEvJ71FWx9p48qqweV043"
+const val STRIPE_TIER_2_PRICE_ID = "price_1POOFpJ71FWx9p48pbEwJW6q"
+const val STRIPE_TIER_3_PRICE_ID = "price_1POOGAJ71FWx9p48g56Ivhs4"
 
 fun Route.stripeRoute(application: Application) {
     val userService = application.provideUserService()
-    val linkService = application.provideLinkService()
+    //val endpointSecret = "whsec_cV5iYGLTpodeG74faqHZtbVN0dvUKiBG"
     val endpointSecret = "whsec_0484b70c26166c603e2a3cdb66aed8dbad5e7c43c6957bf375aac0d7b278b726"
 
     route("/stripe") {
@@ -37,13 +44,13 @@ fun Route.stripeRoute(application: Application) {
                     return@get
                 }
 
-                val amount = when (call.request.queryParameters["tier"]) {
-                    "1" -> 100L
-                    "2" -> 300L
-                    "3" -> 600L
+                val stripe_price_id = when (call.request.queryParameters["tier"]) {
+                    "1" -> STRIPE_TIER_1_PRICE_ID
+                    "2" -> STRIPE_TIER_2_PRICE_ID
+                    "3" -> STRIPE_TIER_3_PRICE_ID
                     else -> null
                 }
-                if (amount == null) {
+                if (stripe_price_id == null) {
                     call.respond(HttpStatusCode.BadRequest, "Invalid tier")
                     return@get
                 }
@@ -62,14 +69,28 @@ fun Route.stripeRoute(application: Application) {
                     stripeCustomerId = customer.id
                 }
 
-                val paramsPaymentIntent = PaymentIntentCreateParams.builder()
-                    .setAmount(amount)
-                    .setCurrency("eur")
-                    .setCustomer(stripeCustomerId)
-                    .build();
-                val intent = PaymentIntent.create(paramsPaymentIntent);
+                val paymentSettings = SubscriptionCreateParams.PaymentSettings.builder()
+                    .setSaveDefaultPaymentMethod(SaveDefaultPaymentMethod.ON_SUBSCRIPTION)
+                    .build()
 
-                call.respond(HttpStatusCode.OK, intent.clientSecret)
+                val subCreateParams = SubscriptionCreateParams.builder()
+                    .setCustomer(stripeCustomerId)
+                    .addItem(
+                        SubscriptionCreateParams.Item.builder()
+                            .setPrice(stripe_price_id)
+                            .setQuantity(1)
+                            .build()
+                    )
+                    .setPaymentSettings(paymentSettings)
+                    .setPaymentBehavior(SubscriptionCreateParams.PaymentBehavior.DEFAULT_INCOMPLETE)
+                    .addAllExpand(Arrays.asList("latest_invoice.payment_intent"))
+                    .build()
+
+
+                val subscription = Subscription.create(subCreateParams)
+                val clientSecret = subscription.latestInvoiceObject.paymentIntentObject.clientSecret
+
+                call.respond(HttpStatusCode.OK, hashMapOf("clientSecret" to clientSecret, "stripeSubscriptionId" to subscription.id))
             }
         }
 
@@ -84,48 +105,51 @@ fun Route.stripeRoute(application: Application) {
             val stripeObject = dataObjectDeserializer.deserializeUnsafe()
 
             when (event.type) {
-                "invoice.overdue" -> {
+                "invoice.payment_failed" -> {
                     val invoice = stripeObject as Invoice
                     val invoiceId = invoice.id
 
-                    val userId = invoice.customFields.find { it.name == "user_id" }?.value?.toIntOrNull()
-                    if (userId == null) {
-                        call.application.environment.log.info("No user id found for invoice $invoiceId")
+                    val userEmail = invoice.customerEmail
+                    if (userEmail == null) {
+                        call.application.environment.log.info("No user email found for invoice $invoiceId")
                         return@post
                     }
 
-                    val user = userService.read(userId)
+                    val user = userService.readByEmail(userEmail)
                     if (user == null) {
                         call.application.environment.log.info("No user found for invoice $invoiceId")
                         return@post
                     }
 
-                    userService.update(userId, user.copy(role = "banned"));
+                    userService.update(user.id as Int, user.copy(role = "free"));
+                }
+                "customer.subscription.deleted" -> {
+
                 }
                 "invoice.paid" -> {
                     val invoice = stripeObject as Invoice
                     val invoiceId = invoice.id
 
-                    val userId = invoice.customFields.find { it.name == "user_id" }?.value?.toIntOrNull()
-                    if (userId == null) {
-                        call.application.environment.log.info("No user id found for invoice $invoiceId")
+                    val userEmail = invoice.customerEmail
+                    if (userEmail == null) {
+                        call.application.environment.log.info("No user email found for invoice $invoiceId")
                         return@post
                     }
 
-                    val user = userService.read(userId)
+                    val user = userService.readByEmail(userEmail)
                     if (user == null) {
                         call.application.environment.log.info("No user found for invoice $invoiceId")
                         return@post
                     }
 
-                    val tier = when (invoice.amountPaid) {
-                        100L -> "tier1"
-                        300L -> "tier2"
-                        600L -> "tier3"
-                        else -> "banned"
+                    val tier = when (invoice.lines.data.first().price.id) {
+                        STRIPE_TIER_1_PRICE_ID -> "tier1"
+                        STRIPE_TIER_2_PRICE_ID -> "tier2"
+                        STRIPE_TIER_3_PRICE_ID -> "tier3"
+                        else -> "free"
                     }
 
-                    userService.update(userId, user.copy(role = tier));
+                    userService.update(user.id as Int, user.copy(role = tier));
                 }
             }
 
