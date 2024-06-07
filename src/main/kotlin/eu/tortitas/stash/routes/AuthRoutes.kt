@@ -54,7 +54,7 @@ fun Route.authRoute(application: Application) {
             }
 
             val token = jwtService.makeToken(user.email)
-            call.respond(hashMapOf("token" to token, "username" to user.username, "id" to user.id.toString(), "role" to user.role, "reminderDayOfWeek" to user.reminderDayOfWeek))
+            call.respond(hashMapOf("token" to token, "username" to user.username, "id" to user.id.toString(), "role" to user.role, "reminderDayOfWeek" to user.reminderDayOfWeek.toString()))
         }
 
         authenticate {
