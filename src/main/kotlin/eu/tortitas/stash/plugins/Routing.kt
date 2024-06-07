@@ -26,15 +26,17 @@ fun Application.configureRouting() {
     // installed with the same key as `StatusPages`
 
     routing {
-        route("/api") {
-            get("/ping") { call.respondText("pong") }
-            authRoute(this@configureRouting)
-            collectionsRoute(this@configureRouting)
-            linksRoute(this@configureRouting)
-            adminRoutes(this@configureRouting)
-            stripeRoute(this@configureRouting)
-        }
+        install(RoleBannedPlugin) {
+            route("/api") {
+                get("/ping") { call.respondText("pong") }
+                authRoute(this@configureRouting)
+                collectionsRoute(this@configureRouting)
+                linksRoute(this@configureRouting)
+                adminRoutes(this@configureRouting)
+                stripeRoute(this@configureRouting)
+            }
 
-        publishRoutes(this@configureRouting)
+            publishRoutes(this@configureRouting)
+        }
     }
 }
