@@ -67,7 +67,7 @@ fun Route.authRoute(application: Application) {
                 }
 
                 val newToken = jwtService.makeToken(user.email)
-                call.respond(hashMapOf("token" to newToken, "username" to user.username, "id" to user.id.toString(), "role" to user.role, "email" to user.email, "reminderDayOfWeek" to user.reminderDayOfWeek))
+                call.respond(hashMapOf("token" to newToken, "username" to user.username, "id" to user.id.toString(), "role" to user.role, "email" to user.email, "reminderDayOfWeek" to user.reminderDayOfWeek.toString()))
             }
 
             put("/reminders") {
