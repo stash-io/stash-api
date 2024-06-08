@@ -49,7 +49,7 @@ class Scheduler(private val task: Runnable) {
             task.run()
         }
 
-        executor.scheduleWithFixedDelay(taskWrapper, initialDelay, 7, TimeUnit.DAYS)
+        executor.scheduleWithFixedDelay(taskWrapper, initialDelay, 1, TimeUnit.SECONDS)
     }
 
 

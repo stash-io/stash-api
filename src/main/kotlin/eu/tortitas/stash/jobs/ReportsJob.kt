@@ -37,6 +37,10 @@ class ReportsJob : Runnable {
     }
 
     override fun run() {
+        application.environment.log.info("""
+            Iniciando el correo semanal
+        """.trimIndent())
+
         val userService = this.application.provideUserService()
         val linkService = this.application.provideLinkService()
 
