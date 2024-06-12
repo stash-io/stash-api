@@ -81,7 +81,7 @@ fun Route.publishRoutes(application: Application) {
 
                         div {
                             h2 {
-                                style = "font-weight: bold; margin-bottom: 0.8rem;"
+                                style = "font-size: 1.2rem; font-weight: bold; margin-bottom: 0.8rem;"
                                 +"Últimos links"
                             }
 
@@ -106,17 +106,12 @@ fun Route.publishRoutes(application: Application) {
                         }
 
                         div {
-                            h2 {
-                                style = "font-weight: bold; margin-bottom: 0.8rem;"
-                                +"Colecciones"
-                            }
-
                             div {
                                 style = "display: flex; flex-wrap: wrap; flex-direction: column; gap: 0.8rem; margin-bottom: 1rem;"
 
                                 for (collection in collections.filter { it.published }) {
                                     h3 {
-                                        style = "font-weight: bold;"
+                                        style = "font-weight: bold; font-size: 1.2rem;"
                                         +"${collection.title}"
                                     }
 
@@ -130,7 +125,7 @@ fun Route.publishRoutes(application: Application) {
                                             a(href = link.url, target = "_blank") {
                                                 div {
                                                     classes = setOf("card")
-                                                    h2 {
+                                                    h4 {
                                                         style = "font-weight: bold;"
                                                         +"${link.title}"
                                                     }
