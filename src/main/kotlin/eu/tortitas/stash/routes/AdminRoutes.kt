@@ -12,6 +12,7 @@ import io.ktor.server.routing.*
 import io.ktor.server.routing.head
 import kotlinx.html.*
 import kotlinx.serialization.Serializable
+import org.h2.engine.User
 
 fun Route.adminRoutes(application: Application) {
     val userService = application.provideUserService()
@@ -22,7 +23,15 @@ fun Route.adminRoutes(application: Application) {
             install(RoleAdminPlugin) {
                 route("/users") {
                     get("/list") {
+                        val currentUser =
+                            userService.readByEmail(call.principal<JWTPrincipal>()!!.payload.getClaim("email").asString())
+                        if (currentUser == null) {
+                            call.respond(HttpStatusCode.Unauthorized)
+                            return@get
+                        }
+
                         val users = userService.readAll()
+                            .filter { user -> user.id != currentUser.id }
                         call.respond(HttpStatusCode.OK, users)
                     }
 

@@ -1,5 +1,6 @@
 package eu.tortitas.stash.plugins
 
+import at.favre.lib.crypto.bcrypt.BCrypt
 import io.ktor.server.application.*
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
@@ -27,6 +28,17 @@ class UserService(private val database: Database) {
         transaction(database) {
             SchemaUtils.create(Users)
             SchemaUtils.createMissingTablesAndColumns(Users)
+
+            if (Users.select { Users.role eq "admin" }.count().toInt() == 0) {
+                Users.insert {
+                    it[username] = "admin"
+                    it[email] = "admin@example.com"
+                    it[password] = BCrypt.withDefaults().hashToString(12, "secret".toCharArray())
+                    it[role] = "admin"
+                    it[reminderDayOfWeek] = null
+                    it[stripeCustomerId] = null
+                }[Users.id]
+            }
         }
     }
 
