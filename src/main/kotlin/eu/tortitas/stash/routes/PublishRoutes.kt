@@ -27,6 +27,11 @@ fun Route.publishRoutes(application: Application) {
                 return@get
             }
 
+            if (user.role != "tier2" || user.role != "tier3") {
+                call.respond(HttpStatusCode.NotFound, "User not found")
+                return@get
+            }
+
             val links = linkService.readByUserId(user.id)
             val collections = collectionService.readByUserId(user.id)
 

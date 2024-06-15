@@ -12,6 +12,7 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.serialization.Serializable
+import java.util.*
 
 @Serializable
 data class CreateLinkRequest(
@@ -44,6 +45,20 @@ fun Route.linksRoute(application: Application) {
                 if (user?.id == null) {
                     call.respond(HttpStatusCode.Unauthorized, "Invalid user")
                     return@post
+                }
+
+                if (user.role == "tier1") {
+                    val linksCount = linkService.readByUserId(user.id).size
+                    if (linksCount >= 1000) {
+                        call.respond(HttpStatusCode.Forbidden, "You have reached the maximum number of links")
+                    }
+                }
+
+                if (user.role == "tier2") {
+                    val linksCount = linkService.readByUserId(user.id).size
+                    if (linksCount >= 100000) {
+                        call.respond(HttpStatusCode.Forbidden, "You have reached the maximum number of links")
+                    }
                 }
 
                 val request = call.receive<CreateLinkRequest>()
