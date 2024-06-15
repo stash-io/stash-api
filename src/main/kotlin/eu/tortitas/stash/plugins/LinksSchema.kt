@@ -134,6 +134,12 @@ class LinkService(private val database: Database) {
             Links.deleteWhere { Links.id.eq(id) and (Links.userId eq userId) }
         }
     }
+
+    suspend fun deleteByUserId(userId: Int) {
+        dbQuery {
+            Links.deleteWhere { Links.userId.eq(userId) }
+        }
+    }
 }
 
 fun Application.provideLinkService(): LinkService {

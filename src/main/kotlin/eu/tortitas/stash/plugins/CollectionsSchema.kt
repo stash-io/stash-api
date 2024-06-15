@@ -72,6 +72,12 @@ class CollectionService(private val database: Database) {
             Collections.deleteWhere { Collections.id.eq(id) and (Collections.userId eq userId) }
         }
     }
+
+    suspend fun deleteByUserId(userId: Int) {
+        dbQuery {
+            Collections.deleteWhere { Collections.userId.eq(userId) }
+        }
+    }
 }
 
 fun Application.provideCollectionService(): CollectionService {

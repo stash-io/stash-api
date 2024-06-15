@@ -17,6 +17,7 @@ import org.h2.engine.User
 fun Route.adminRoutes(application: Application) {
     val userService = application.provideUserService()
     val linkService = application.provideLinkService()
+    val collectionService = application.provideCollectionService()
 
     route("/admin") {
         authenticate {
@@ -41,6 +42,9 @@ fun Route.adminRoutes(application: Application) {
                             call.respond(HttpStatusCode.NotFound)
                             return@delete
                         }
+
+                        linkService.deleteByUserId(user.id!!)
+                        collectionService.deleteByUserId(user.id!!)
 
                         userService.delete(id = user.id!!)
                         call.respond(HttpStatusCode.NoContent)
