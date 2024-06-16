@@ -27,7 +27,7 @@ fun Route.publishRoutes(application: Application) {
                 return@get
             }
 
-            if (user.role != "tier2" || user.role != "tier3") {
+            if (user.role != "tier2" && user.role != "tier3") {
                 call.respond(HttpStatusCode.NotFound, "User not found")
                 return@get
             }
